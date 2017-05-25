@@ -1,0 +1,29 @@
+.weather-view-css-loaded {
+    height: 1px;
+}
+
+.weather-details {
+    display: block;
+    margin: 10px 0;
+    padding: 5px 10px 20px 10px;
+    background-color: rgba(140, 140, 140, 0.96);
+}
+
+.lowTemp {
+    color: #0322fc
+}
+
+.highTemp {
+    color: #c40000
+}
+
+.lowTemp,
+.highTemp,
+.currentTemp {
+    font-weight: bold;
+    font-size: 1.15em;
+}
+
+.last-paragraph {
+    margin-bottom: 25px;
+}

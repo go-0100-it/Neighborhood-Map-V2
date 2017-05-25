@@ -1,0 +1,34 @@
+<!-- -->
+<div class="drawer-menu-container" id="drawer-menu-container" data-bind="css: expandedClass">
+    <div class="drawer-menu" id="drawer-menu" data-bind="css: expandedClass">
+        <h2 class="drawer-menu-header">Places</h2>
+        <div class="drawer-button-bar">
+            <button class="drawer-button-bar-button" data-bind="click: toggleFilter">Filter</button><button class="drawer-button-bar-button" data-bind="click: toggleAddressSearch">New</button>
+            <div data-bind="visible: addressSearchVisible">
+                <input class="place-name-input" data-bind="value: name, valueUpdate: 'keyup'" placeholder='Give your new place a name...' />
+                <div class="selected-place-display warning" data-bind="visible: nameRequestVisible"><span>Please give your new place a name.</span></div>
+                <div class="selected-place-display" data-bind="visible: selectedPlaceDisplayVisible"><span data-bind="text: selectedFormattedAddress"></span></div>
+                <input class="address-input" type="search" data-bind="value: searchInput, valueUpdate: 'keyup', visible: searchInputVisible" autocomplete="off" placeholder="Search address" />
+                <ul class="drawer-menu-list" data-bind="foreach: { data: searchResults, as: 'result' }">
+                    <li class="drawer-list-item search-results">
+                        <span class="li-name search-results" data-bind="text: result.formatted_address, click: $parent.onSelectAddress"></span>
+                    </li>
+                </ul>
+            </div>
+            <div data-bind="visible: filterVisible">
+                <input class="filter-by-input" type="text" data-bind="value: filterInput, valueUpdate: 'keyup'" placeholder="Filter names by..." />
+            </div>
+            <hr/>
+            <button class="drawer-button-bar-button" data-bind="click: resetSearchView, visible: addButtonVisible">CANCEL</button><button class="drawer-button-bar-button" data-bind="click: clickAdd, visible: addButtonVisible">ADD</button>
+        </div>
+        <div class="list-container">
+            <ul class="drawer-menu-list" data-bind="foreach: { data: filteredPlaces, as: 'place' }">
+                <li class="drawer-list-item">
+                    <div class="remove-button" data-bind="click: $parent.removePlace"><span class="remove-icon">⊗</span><span class="remove-title">remove</span></div>
+                    <div class="item-details" data-bind="click: $parent.onClick"><span class="li-name" data-bind="text: place.name"></span><span class="li-addr" data-bind="text: place.address"></span></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div for="drawer-menu-check" class="drawer-toggler" data-bind="click: toggleDrawerList, css: expandedClass"><span class="drawer-menu-span">≡</span></div>
+</div>

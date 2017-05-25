@@ -1,0 +1,20 @@
+.events-view-css-loaded {
+    height: 1px;
+}
+
+.eventful-badge,
+.eventful-badge * {
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    text-align: center !important;
+    color: #ccc !important;
+    font-family: Arial !important;
+    text-decoration: none !important;
+}
+
+.eventful-medium {
+    width: 100px !important;
+    font-size: 12px !important;
+    line-height: 13px !important;
+}

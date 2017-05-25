@@ -1,0 +1,22 @@
+.navbar-view-css-loaded {
+    height: 1px;
+}
+
+.nav-bar {
+    box-sizing: border-box;
+    box-shadow: 0 2.5px 10px #111111;
+    background-color: #6d4e35;
+    z-index: 10;
+    position: fixed;
+    width: 100%;
+    height: 80px;
+    margin: 0 auto;
+    padding: 10px 10px 10px 20px;
+}
+
+@media only screen and (max-width: 600px) {
+    .nav-bar {
+        padding: 1.5px 0 0 1.5px;
+        height: 50px;
+    }
+}

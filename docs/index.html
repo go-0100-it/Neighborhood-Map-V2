@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html>
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/navbar-view.css">
+    <link rel="stylesheet" type="text/css" href="css/drawer-menu.css">
+    <link rel="stylesheet" type="text/css" href="css/main-view.css">
+    <link rel="stylesheet" type="text/css" href="css/tabs-view.css">
+    <link rel="stylesheet" type="text/css" href="css/events-view.css">
+    <link rel="stylesheet" type="text/css" href="css/weather-view.css">
+    <link rel="stylesheet" type="text/css" href="css/map.css">
+    <script data-main="js/config" src="js/require.min.js"></script>
+</head>
+
+<body>
+    <div class="background-image-container">
+        <img id="background-img" src="res/images/silhouette.jpg">
+    </div>
+    <nav class="nav-bar" id="nav"></nav>
+    <div class="container">
+        <div class="container-view" id="container-view">
+            <div class="spinner-container">
+                <img class="main-spinner" src="res/images/loading-11.gif" />
+            </div>
+        </div>
+        <div class="map-container-view" id="map-container-view"></div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcqT6Cvr1Qr7B3BqhkinjManD4gywWGHA" async defer></script>
+</body>
+
+</html>

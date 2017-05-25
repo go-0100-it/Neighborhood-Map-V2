@@ -1,0 +1,25 @@
+<!-- -->
+<div id="restaurants-view" class="tab-content current">
+    <div class="tab-list-container">
+        <div class="badge-container">
+            <div class="collections_widget_footer">
+                <img src="https://www.zomato.com/images/logo/icon_32x32.png" alt="Zomato" width="16px" height="auto">
+                <a class="powered_by" target="_blank" href="https://www.zomato.com/?utm_source=referral-widget&amp;utm_medium=collection_widget&amp;utm_campaign=widget-developers">Powered by Zomato</a>
+            </div>
+        </div>
+        <ul class="tab-list" data-bind="foreach: { data: data, as: 'restaurant' }">
+            <li class="tab-list-item">
+                <div class="tab-list-item-container">
+                    <div class="tab-list-item-img" data-bind="visible: restaurant.name !== 'No restaurants found for this location' && $parent.isErr !== true">
+                        <img class="item-img" style="width: 100px;" data-bind="visible: restaurant.thumb !== '' && restaurant.thumb !== null, attr: { src: restaurant.thumb !== null ? restaurant.thumb : 'res/images/placeholder.png' }">
+                    </div>
+                    <h2 class="restaurant-name" data-bind="text: restaurant.name"></h2>
+                    <div data-bind="visible: restaurant.name !== 'No restaurants found for this location' && $parent.isErr !== true">
+                        <span>Cuisine: </span><span data-bind="text: restaurant.cuisines"></span>
+                        <h4 class="restaurant-address" data-bind="text: restaurant.location.address"></h4>
+                        <button class="tab-item-button" data-bind="click: $parent.addPlace">Save place</button>
+                    </div>
+            </li>
+        </ul>
+        </div>
+    </div>

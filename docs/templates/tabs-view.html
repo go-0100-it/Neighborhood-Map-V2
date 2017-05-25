@@ -1,0 +1,26 @@
+<!-- -->
+<div class="tab-view-container" id="tabs-view">
+    <div class="tabs-container" id="tabs-container">
+        <div class="map-icon-container" id="map-icon-container"><img id="map-icon" data-bind="click: onClickMapIcon" src="res/images/maps-icon.png" alt="Map icon"></div>
+        <div class="fixed-view">
+            <ul class="tabs" id="tabs" data-bind="css: expandedClass">
+                <li class="tab-link tab-box-shadow" id="menu" data-bind="click: toggleTabsMenu, css: expandedClass">MENU</li>
+                <li class="tab-link tab-box-shadow" id="events-tab" data-bind="click: onClickEventsTab">Events</li>
+                <li class="tab-link tab-box-shadow selected" id="weather-tab" data-bind="click: onClickWeatherTab">Weather</li>
+                <li class="tab-link tab-box-shadow" id="restaurants-tab" data-bind="click: onClickRestaurantsTab">Restaurants</li>
+                <li class="tab-link tab-box-shadow" id="others-tab" data-bind="click: onClickOthersTab">Other</li>
+                <li class="icon" data-bind="click: toggleTabsMenu">&#9776;</li>
+            </ul>
+        </div>
+        <div class="place-info-container" id="places-info">
+            <h1 class="events-span" data-bind="text: title"></h1>
+            <h3 data-bind="text: name"></h3>
+            <h4 data-bind="text: address"></h4>
+        </div>
+    </div>
+</div>
+<div class="tab-container" id="tab-container">
+    <div class="spinner-container">
+        <img class="tabs-spinner" src="res/images/loading-11.gif" />
+    </div>
+</div>

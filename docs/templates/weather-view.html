@@ -1,0 +1,23 @@
+<!-- -->
+<div id="weather-view" class="tab-content current">
+    <div class="tab-list-container">
+        <div class="badge-container">
+            <div class="eventful-badge eventful-medium">
+                <a target="_blank" href="http://worldweatheronline.com/">
+                    <p>Forecast by</p>
+                    <img width="100px" src="https://developer.worldweatheronline.com/staticv6/images/logo.png" alt="Worldweatheronline.com Icon">
+                </a>
+
+
+            </div>
+        </div>
+        <div class="weather-details">
+            <h1 class="weather-description">Current Conditions</h1>
+            <h2 class="weather-description" data-bind="text: weatherDesc"></h2>
+            <img width="120px" data-bind="attr: { src: iconSrc }">
+            <p>Curr temp: <span class="currentTemp" data-bind="text: currentTemp"></span></p>
+            <p class="last-paragraph">Low: <span class="lowTemp" data-bind="text: lowTemp"></span> &nbsp;&nbsp; High: <span class="highTemp" data-bind="text: highTemp"></span></p>
+            <button class="tab-item-button" data-bind="click: get5day">Get 5 day</button>
+        </div>
+    </div>
+</div>
