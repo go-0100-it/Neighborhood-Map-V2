@@ -17,20 +17,20 @@
 }
 
 .tab-content {
-    width: 50%;
+    width: 65%;
     margin: 0 auto;
 }
 
 .place-info-container {
     box-sizing: border-box;
     padding: 20px 10px;
-    width: 50%;
-    margin: 0 auto;
+    width: 70%;
+    margin: 130px auto 0 auto;
     background-color: #fff
 }
 
 .tab-container {
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
 }
 
@@ -137,10 +137,10 @@
         font-size: 16px;
     }
     .place-info-container {
-        width: 70%;
+        width: 80%;
     }
     .tab-container {
-        width: 70%;
+        width: 80%;
     }
 }
 
@@ -149,10 +149,11 @@
         width: 100%;
         top: 34px;
     }
-    .place-info-container {
-        width: 100%;
-    }
-    .tab-container {
+    .place-info-container,
+    .tab-container,
+    .tabs-container-view,
+    .tab-container-view,
+    .tab-content {
         width: 100%;
     }
     .tabs-spinner {
