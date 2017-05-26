@@ -13,7 +13,7 @@ requirejs.config({
         /* Libraries */
         jquery: 'libs/jquery.min',
         underscore: 'libs/underscore.min',
-        backbone: 'libs/backbone.min',
+        backbone: 'libs/backbone',
         knockout: 'libs/knockout.min',
         app: 'app',
         util: 'util',
@@ -40,7 +40,8 @@ requirejs.config({
         weather_list_view_model: 'view-models/weather-list-view-model',
         restaurants_list_view_model: 'view-models/restaurants-list-view-model',
         others_list_view_model: 'view-models/others-list-view-model',
-        map_view_model: 'view-models/map-view-model'
+        map_view_model: 'view-models/map-view-model',
+        spinner_view_model: 'view-models/spinner-view-model'
     },
 });
 // Start the main app logic.
@@ -53,7 +54,7 @@ requirejs([
     'firebase_app'
 
 ], function($, _, bb, ko, tpl) {
-    tpl.loadTemplates(['drawer-list-view', 'map', 'tabs-view', 'events-view', 'weather-view', 'restaurants-view', 'others-view', 'tabs-spinner-view'], function() {
+    tpl.loadTemplates(['drawer-list-view', 'map', 'tabs-view', 'events-view', 'weather-view', 'restaurants-view', 'others-view', 'spinner-view'], function() {
         // Start the main app logic.
         requirejs(['firebase_auth', 'firebase_data'], function() {
             // Initialize Firebase

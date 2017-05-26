@@ -3,10 +3,9 @@
  */
 define([
         'jquery',
-        'knockout',
-        'main_controller'
+        'knockout'
     ],
-    function($, ko, MainController) {
+    function($, ko) {
         var WeatherListViewModel = function(place, data, isError, main) {
             var _this = this;
             this.template = ko.observable();

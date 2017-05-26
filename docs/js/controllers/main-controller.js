@@ -11,6 +11,7 @@ define([
         'weather_list_view_model',
         'restaurants_list_view_model',
         'others_list_view_model',
+        'spinner_view_model',
         'data_controller',
         'map_controller',
         'firebase_helper'
@@ -25,6 +26,7 @@ define([
         WeatherListViewModel,
         RestaurantsListViewModel,
         OthersListViewModel,
+        SpinnerViewModel,
         DataController,
         Map,
         FBHelper
@@ -126,10 +128,11 @@ define([
             this.renderMap = function(place) {
 
                 var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
+                if (_this.tabsViewModel) {
+                    _this.tabsViewModel.showTabs(false);
+                    _this.removeCurrentTab();
+                }
                 if (_this.map) {
-                    if (_this.tabsViewModel) {
-                        _this.tabsViewModel.showTabs(false);
-                    }
                     _this.map.mapViewModel.showMap(true);
                     _this.map.refreshMap(loc);
                 } else {
@@ -180,6 +183,7 @@ define([
                     ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
 
                 }
+                _this.renderSpinner();
                 _this.renderTabView(place, view);
             };
 
@@ -191,6 +195,7 @@ define([
              * @param {object} view - 
              */
             this.renderTabView = function(place, view) {
+
                 //
                 switch (view) {
                     case 'events':
@@ -200,6 +205,8 @@ define([
                             viewVariable: 'eventsView',
                             viewModelVariable: 'eventsListViewModel',
                             viewModelConstructor: EventsListViewModel,
+                            template: tpl.get('events-view'),
+                            el: '#events-view',
                             place: place
                         };
 
@@ -215,6 +222,8 @@ define([
                             viewVariable: 'weatherView',
                             viewModelVariable: 'weatherListViewModel',
                             viewModelConstructor: WeatherListViewModel,
+                            template: tpl.get('weather-view'),
+                            el: '#weather-view',
                             place: place
                         };
 
@@ -230,6 +239,8 @@ define([
                             viewVariable: 'restaurantsView',
                             viewModelVariable: 'restaurantsListViewModel',
                             viewModelConstructor: RestaurantsListViewModel,
+                            template: tpl.get('restaurants-view'),
+                            el: '#restaurants-view',
                             place: place
                         };
 
@@ -245,6 +256,8 @@ define([
                             viewVariable: 'othersView',
                             viewModelVariable: 'othersListViewModel',
                             viewModelConstructor: OthersListViewModel,
+                            template: tpl.get('others-view'),
+                            el: '#others-view',
                             place: place
                         };
 
@@ -262,20 +275,49 @@ define([
              */
             this.renderView = function(data, vcd, isError) {
 
+                _this.removeCurrentTab();
+
                 //
                 _this[vcd.viewModelVariable] = new vcd.viewModelConstructor(vcd.place, data, isError, _this);
 
                 // Checking if the element has bindings applied. If no bindings have previously been applied to this element then apply bindings. 
-                if (!!!ko.dataFor($('#tab-container-view')[0])) {
-                    ko.applyBindings(_this[vcd.viewModelVariable], $('#tab-container-view')[0]);
-                } else {
-                    //
-                    ko.cleanNode($('#tab-container-view')[0]);
-                    ko.applyBindings(_this[vcd.viewModelVariable], $('#tab-container-view')[0]);
+                if (!!!ko.dataFor($('#tab-container')[0])) {
+                    ko.applyBindings(_this[vcd.viewModelVariable], $('#tab-container')[0]);
                 }
-                _this[vcd.viewModelVariable].showTab(true);
+
                 _this[vcd.viewModelVariable].template(vcd.template);
+
+                ko.cleanNode($('#tab-container')[0]);
+
+                ko.applyBindings(_this[vcd.viewModelVariable], $(vcd.el)[0]);
+
+                _this.currentTab = {tab: $(vcd.el)[0], viewModel: _this[vcd.viewModelVariable]};
+                
             };
+
+
+            this.renderSpinner = function(){
+                viewConfigData = {
+                            viewVariable: 'spinnerView',
+                            viewModelVariable: 'spinnerViewModel',
+                            viewModelConstructor: SpinnerViewModel,
+                            template: tpl.get('spinner-view'),
+                            el: '#spinner-view',
+                            place: null
+                        };
+
+                        //
+                        _this.renderView(null, viewConfigData, false);
+            };
+
+
+            this.removeCurrentTab = function(){
+                if(_this.currentTab){
+                    ko.removeNode(_this.currentTab.tab);
+                    _this.currentTab = null;
+                }
+            };
+
         };
 
         //

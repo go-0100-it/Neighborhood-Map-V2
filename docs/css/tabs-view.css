@@ -11,6 +11,16 @@
     margin: auto;
 }
 
+.tab-container-view {
+    width: 65%;
+    margin: auto;
+}
+
+.tab-content {
+    width: 50%;
+    margin: 0 auto;
+}
+
 .place-info-container {
     box-sizing: border-box;
     padding: 20px 10px;
