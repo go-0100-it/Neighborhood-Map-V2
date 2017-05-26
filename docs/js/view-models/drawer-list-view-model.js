@@ -74,7 +74,7 @@ define([
 
             this.onClick = function(place) {
 
-                if ($('#map').is(":hidden")) {
+                if (!_this.map.mapViewModel.showMap()) {
                     Backbone.history.navigate('#places/' + place.id + '/' + place.name + '/' + place.address + '/' + place.lat + '/' + place.lng, { trigger: true });
                     _this.centerLocation(place);
                 } else {

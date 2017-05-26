@@ -41,7 +41,6 @@ define([
          */
         var Main = function() {
             var _this = this;
-            this.map = {};
 
             /** */
             this.dataController = new DataController();
@@ -73,6 +72,8 @@ define([
                     ko.cleanNode($('#nav')[0]);
 
                     var locationRequest = {};
+
+                    _this.renderMap(place);
 
                     //
                     if (loc) {
@@ -110,6 +111,8 @@ define([
 
                     ko.applyBindings(_this.drawerListViewModel, $('#drawer-menu-container')[0]);
                     //
+                } else {
+                    _this.renderMap(place);
                 }
             };
 
@@ -120,8 +123,14 @@ define([
              * 
              * @param {object} loc - 
              */
-            this.renderMap = function(loc) {
+            this.renderMap = function(place) {
+
+                var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
                 if (_this.map) {
+                    if (_this.tabsViewModel) {
+                        _this.tabsViewModel.showTabs(false);
+                    }
+                    _this.map.mapViewModel.showMap(true);
                     _this.map.refreshMap(loc);
                 } else {
                     _this.map = new Map();
@@ -130,7 +139,7 @@ define([
                     //
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(function(position) {
-                            defaultLoc = {
+                            var defaultLoc = loc ? loc : {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude
                             };
@@ -150,9 +159,13 @@ define([
             this.renderTabsView = function(place, view) {
 
                 _this.renderDrawerListView(place);
-                _this.map.showMap(false);
+
+                if (_this.map.mapViewModel) {
+                    _this.map.mapViewModel.showMap(false);
+                }
 
                 if (_this.tabsViewModel) {
+                    _this.tabsViewModel.place(place);
                     _this.tabsViewModel.showTabs(true);
                 } else {
                     //
@@ -161,6 +174,10 @@ define([
                     ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
 
                     _this.tabsViewModel.template(tpl.get('tabs-view'));
+
+                    ko.cleanNode($('#tabs-container-view')[0]);
+
+                    ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
 
                 }
                 _this.renderTabView(place, view);
@@ -180,9 +197,9 @@ define([
 
                         //
                         viewConfigData = {
+                            viewVariable: 'eventsView',
                             viewModelVariable: 'eventsListViewModel',
                             viewModelConstructor: EventsListViewModel,
-                            el: '#events-view',
                             place: place
                         };
 
@@ -195,9 +212,9 @@ define([
 
                         //
                         viewConfigData = {
+                            viewVariable: 'weatherView',
                             viewModelVariable: 'weatherListViewModel',
                             viewModelConstructor: WeatherListViewModel,
-                            el: '#weather-view',
                             place: place
                         };
 
@@ -210,9 +227,9 @@ define([
 
                         //
                         viewConfigData = {
+                            viewVariable: 'restaurantsView',
                             viewModelVariable: 'restaurantsListViewModel',
                             viewModelConstructor: RestaurantsListViewModel,
-                            el: '#restaurants-view',
                             place: place
                         };
 
@@ -225,9 +242,9 @@ define([
 
                         //
                         viewConfigData = {
+                            viewVariable: 'othersView',
                             viewModelVariable: 'othersListViewModel',
                             viewModelConstructor: OthersListViewModel,
-                            el: '#others-view',
                             place: place
                         };
 
@@ -243,10 +260,10 @@ define([
              * @param {object} data - 
              * @param {object} vcd - 
              */
-            this.renderView = function(data, vcd, isError, _this) {
+            this.renderView = function(data, vcd, isError) {
 
                 //
-                _this[vcd.viewModelVariable] = new vcd.viewModelConstructor();
+                _this[vcd.viewModelVariable] = new vcd.viewModelConstructor(vcd.place, data, isError, _this);
 
                 // Checking if the element has bindings applied. If no bindings have previously been applied to this element then apply bindings. 
                 if (!!!ko.dataFor($('#tab-container-view')[0])) {
@@ -258,7 +275,6 @@ define([
                 }
                 _this[vcd.viewModelVariable].showTab(true);
                 _this[vcd.viewModelVariable].template(vcd.template);
-                _this[vcd.viewModelVariable].data(data);
             };
         };
 

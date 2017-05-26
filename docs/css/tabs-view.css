@@ -6,6 +6,11 @@
     display: none;
 }
 
+.tabs-container-view {
+    width: 65%;
+    margin: auto;
+}
+
 .place-info-container {
     box-sizing: border-box;
     padding: 20px 10px;

@@ -24,13 +24,11 @@ define(['jquery', 'main_controller'],
             'placesOnMap': function() {
                 // Calling function @ Maincontroller to create the drawer list
                 MainController.renderDrawerListView();
-                MainController.renderMap();
             },
             'placeOnMap': function(id, name, address, lat, lng) {
                 // Calling function @ Maincontroller to create the drawer list
                 var place = { id: id, name: name, address: address, lat: lat, lng: lng };
                 MainController.renderDrawerListView(place);
-                MainController.renderMap();
             },
             'events': function(id, name, address, lat, lng) {
                 var place = { id: id, name: name, address: address, lat: lat, lng: lng };
