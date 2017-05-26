@@ -3,13 +3,13 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout'
     ],
-    function($, Backbone, _, ko) {
+    function($, ko) {
         var TabsViewModel = function(place) {
             var _this = this;
+            this.template = ko.observable();
+            this.showTabs = ko.observable(true);
             this.tabsList = ['events', 'weather', 'restaurants', 'others'];
             this.place = ko.observable(place);
             this.id = ko.observable(this.place().id);

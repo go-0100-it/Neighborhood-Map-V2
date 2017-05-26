@@ -3,11 +3,9 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout'
     ],
-    function($, Backbone, _, ko) {
+    function($, ko) {
 
         /**
          * @param {function} func - The title of the book.
@@ -15,6 +13,7 @@ define([
          */
         var DrawerListViewModel = function(places) {
             var _this = this;
+            this.template = ko.observable();
             this.id = ko.observable();
             this.name = ko.observable();
 

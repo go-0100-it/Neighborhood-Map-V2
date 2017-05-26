@@ -39,17 +39,20 @@ requirejs.config({
         events_list_view_model: 'view-models/events-list-view-model',
         weather_list_view_model: 'view-models/weather-list-view-model',
         restaurants_list_view_model: 'view-models/restaurants-list-view-model',
-        others_list_view_model: 'view-models/others-list-view-model'
+        others_list_view_model: 'view-models/others-list-view-model',
+        map_view_model: 'view-models/map-view-model'
     },
 });
 // Start the main app logic.
 requirejs([
     'jquery',
+    'underscore',
+    'backbone',
     'knockout',
     'util',
     'firebase_app'
 
-], function($, ko, tpl) {
+], function($, _, bb, ko, tpl) {
     tpl.loadTemplates(['drawer-list-view', 'map', 'tabs-view', 'events-view', 'weather-view', 'restaurants-view', 'others-view', 'tabs-spinner-view'], function() {
         // Start the main app logic.
         requirejs(['firebase_auth', 'firebase_data'], function() {

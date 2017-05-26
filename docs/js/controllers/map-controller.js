@@ -3,17 +3,15 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout',
-        'map_view'
+        'map_view_model',
+        'util'
     ],
     function(
         $,
-        backbone,
-        _,
         ko,
-        MapView
+        MapViewModel,
+        tpl
     ) {
 
 
@@ -40,7 +38,10 @@ define([
                 if (typeof google === 'object' && typeof google.maps === 'object') {
 
                     //
-                    var mapView = new MapView().render();
+                    _this.mapViewModel = new MapViewModel();
+                    _this.mapViewModel.template(tpl.get('map'));
+                    ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);
+
 
                     //
                     _this.map = new google.maps.Map(document.getElementById('map'), {

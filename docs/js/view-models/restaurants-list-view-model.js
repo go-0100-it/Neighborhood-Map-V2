@@ -3,13 +3,13 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout'
     ],
-    function($, Backbone, _, ko) {
+    function($, ko) {
         var RestaurantsListViewModel = function(place, data, isError, main) {
             var _this = this;
+            this.template = ko.observable();
+            this.showTab = ko.observable(true);
             var Main = main;
             this.id = ko.observable(place.id);
             this.name = ko.observable(place.name);

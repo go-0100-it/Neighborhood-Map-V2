@@ -3,40 +3,28 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout',
         'util',
+        'drawer_list_view_model',
         'tabs_view_model',
-        'tabs_view',
         'events_list_view_model',
-        'events_view',
         'weather_list_view_model',
-        'weather_view',
         'restaurants_list_view_model',
-        'restaurants_view',
         'others_list_view_model',
-        'others_view',
         'data_controller',
         'map_controller',
         'firebase_helper'
     ],
     function(
         $,
-        backbone,
-        _,
         ko,
         tpl,
+        DrawerListViewModel,
         TabsViewModel,
-        TabsView,
         EventsListViewModel,
-        EventsView,
         WeatherListViewModel,
-        WeatherView,
         RestaurantsListViewModel,
-        RestaurantsView,
         OthersListViewModel,
-        OthersView,
         DataController,
         Map,
         FBHelper
@@ -67,79 +55,62 @@ define([
             this.renderDrawerListView = function(place) {
 
                 //
-                require(['drawer_list_view_model', 'drawer_list_view'], function(DrawerListViewModel, DrawerListView) {
+                var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
+
+                //
+                if (!_this.drawerListViewModel) {
 
                     //
-                    var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
+                    _this.drawerListViewModel = new DrawerListViewModel();
 
                     //
-                    if (!_this.drawerListView) {
+                    ko.applyBindings(_this.drawerListViewModel, $('#nav')[0]);
 
-                        //
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition(function(position) {
-                                defaultLoc = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude
-                                };
-                                _this.map.centerOnLocation(defaultLoc);
-                            });
-                        }
+                    //
+                    _this.drawerListViewModel.template(tpl.get('drawer-list-view'));
 
-                        //
-                        _this.drawerListView = new DrawerListView().render();
+                    //
+                    ko.cleanNode($('#nav')[0]);
 
-                        //
-                        _this.eventsViewModel = new DrawerListViewModel();
+                    var locationRequest = {};
 
-                        //
-                        _this.renderMap();
-
-                        var locationRequest = {};
-
-                        //
-                        if (loc) {
-                            var isRequested = true;
-                            locationRequest = { centerOnLocation: _this.map.centerOnLocation, centerRequested: isRequested, locRequested: loc };
-                        }
-
-                        //
-                        FBHelper.initAuth(_this.dataController.getUserPlaces, _this.eventsViewModel.pushPlace, locationRequest);
-
-
-
-
-                        /**
-                         * 
-                         * @param {object} place - 
-                         */
-                        _this.eventsViewModel.updatePlacesData = function(place) {
-
-                            //
-                            _this.dataController.updateUserPlaces(place, FBHelper.uid);
-                        };
-
-
-
-
-                        /**
-                         * 
-                         * @param {object} place - 
-                         */
-                        _this.eventsViewModel.removePlaceData = function(place) {
-
-                            //
-                            _this.dataController.removeUserPlace(place, FBHelper.uid);
-                        };
-
-                        //
-                        ko.applyBindings(_this.eventsViewModel, $('#drawer-menu-container')[0]);
-
-                        //
-                    } else {
-                        _this.map.refreshMap(loc);
+                    //
+                    if (loc) {
+                        var isRequested = true;
+                        locationRequest = { centerOnLocation: _this.map.centerOnLocation, centerRequested: isRequested, locRequested: loc };
                     }
-                });
+                    //
+                    FBHelper.initAuth(_this.dataController.getUserPlaces, _this.drawerListViewModel.pushPlace, locationRequest);
+
+
+
+
+                    /**
+                     * 
+                     * @param {object} place - 
+                     */
+                    _this.drawerListViewModel.updatePlacesData = function(place) {
+
+                        //
+                        _this.dataController.updateUserPlaces(place, FBHelper.uid);
+                    };
+
+
+
+
+                    /**
+                     * 
+                     * @param {object} place - 
+                     */
+                    _this.drawerListViewModel.removePlaceData = function(place) {
+
+                        //
+                        _this.dataController.removeUserPlace(place, FBHelper.uid);
+                    };
+
+                    ko.applyBindings(_this.drawerListViewModel, $('#drawer-menu-container')[0]);
+                    //
+                }
             };
 
 
@@ -150,9 +121,23 @@ define([
              * @param {object} loc - 
              */
             this.renderMap = function(loc) {
-                _this.map = new Map();
-                _this.map.init(loc);
-                _this.eventsViewModel.map = _this.map;
+                if (_this.map) {
+                    _this.map.refreshMap(loc);
+                } else {
+                    _this.map = new Map();
+                    _this.map.init();
+                    _this.drawerListViewModel.map = _this.map;
+                    //
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            defaultLoc = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+                            _this.map.centerOnLocation(defaultLoc);
+                        });
+                    }
+                }
             };
 
 
@@ -164,45 +149,37 @@ define([
              */
             this.renderTabsView = function(place, view) {
 
-                //
                 _this.renderDrawerListView(place);
-                $('#container-view').show();
-                $('#map-container-view').hide();
+                _this.map.showMap(false);
 
-                //
-                var viewConfigData = {
-                    viewVariable: 'tabsView',
-                    viewConstructor: TabsView,
-                    viewModelVariable: 'tabsViewModel',
-                    viewModelConstructor: TabsViewModel,
-                    el: '#tabs-container',
-                    place: place
-                };
-
-                //
-                if (!_this.tabsView) {
-
-                    //
-                    _this.renderView(place, viewConfigData);
-
-                    //
+                if (_this.tabsViewModel) {
+                    _this.tabsViewModel.showTabs(true);
                 } else {
-
                     //
-                    _this.tabsViewModel.place(place);
+                    _this.tabsViewModel = new TabsViewModel(place);
 
-                    //
-                    $('#tab-container').html(_.template(tpl.get('tabs-spinner-view')));
+                    ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
+
+                    _this.tabsViewModel.template(tpl.get('tabs-view'));
+
                 }
+                _this.renderTabView(place, view);
+            };
 
+
+
+
+            /**
+             * @param {object} place - 
+             * @param {object} view - 
+             */
+            this.renderTabView = function(place, view) {
                 //
                 switch (view) {
                     case 'events':
 
                         //
                         viewConfigData = {
-                            viewVariable: 'eventsView',
-                            viewConstructor: EventsView,
                             viewModelVariable: 'eventsListViewModel',
                             viewModelConstructor: EventsListViewModel,
                             el: '#events-view',
@@ -218,8 +195,6 @@ define([
 
                         //
                         viewConfigData = {
-                            viewVariable: 'weatherView',
-                            viewConstructor: WeatherView,
                             viewModelVariable: 'weatherListViewModel',
                             viewModelConstructor: WeatherListViewModel,
                             el: '#weather-view',
@@ -235,8 +210,6 @@ define([
 
                         //
                         viewConfigData = {
-                            viewVariable: 'restaurantsView',
-                            viewConstructor: RestaurantsView,
                             viewModelVariable: 'restaurantsListViewModel',
                             viewModelConstructor: RestaurantsListViewModel,
                             el: '#restaurants-view',
@@ -252,8 +225,6 @@ define([
 
                         //
                         viewConfigData = {
-                            viewVariable: 'othersView',
-                            viewConstructor: OthersView,
                             viewModelVariable: 'othersListViewModel',
                             viewModelConstructor: OthersListViewModel,
                             el: '#others-view',
@@ -272,25 +243,22 @@ define([
              * @param {object} data - 
              * @param {object} vcd - 
              */
-            this.renderView = function(data, vcd, isError) {
+            this.renderView = function(data, vcd, isError, _this) {
 
                 //
-                _this[vcd.viewVariable] = new vcd.viewConstructor().render();
-
-                //
-                _this[vcd.viewModelVariable] = new vcd.viewModelConstructor({
-                        id: vcd.place.id,
-                        name: vcd.place.name,
-                        address: vcd.place.address,
-                        lat: vcd.place.lat,
-                        lng: vcd.place.lng
-                    },
-                    data, isError, _this);
+                _this[vcd.viewModelVariable] = new vcd.viewModelConstructor();
 
                 // Checking if the element has bindings applied. If no bindings have previously been applied to this element then apply bindings. 
-                if (!!!ko.dataFor($(vcd.el)[0])) {
-                    ko.applyBindings(_this[vcd.viewModelVariable], $(vcd.el)[0]);
+                if (!!!ko.dataFor($('#tab-container-view')[0])) {
+                    ko.applyBindings(_this[vcd.viewModelVariable], $('#tab-container-view')[0]);
+                } else {
+                    //
+                    ko.cleanNode($('#tab-container-view')[0]);
+                    ko.applyBindings(_this[vcd.viewModelVariable], $('#tab-container-view')[0]);
                 }
+                _this[vcd.viewModelVariable].showTab(true);
+                _this[vcd.viewModelVariable].template(vcd.template);
+                _this[vcd.viewModelVariable].data(data);
             };
         };
 

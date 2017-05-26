@@ -3,8 +3,6 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout',
         'events_API',
         'cache',
@@ -15,8 +13,6 @@ define([
     function(
         $,
         backbone,
-        _,
-        ko,
         EventsApi,
         Cache
     ) {
@@ -334,62 +330,62 @@ define([
              */
             this.getOthersList = function(args, func) {
 
-            //     // Incrementing the dataRequestCount variable by 1 every time a request is made(this code is run).
-                 _this.dataRequestCount += 1;
+                //     // Incrementing the dataRequestCount variable by 1 every time a request is made(this code is run).
+                _this.dataRequestCount += 1;
 
-            //     // Capturing the current dataRequestCount value as this requests id.
-                 var callId = _this.dataRequestCount;
+                //     // Capturing the current dataRequestCount value as this requests id.
+                var callId = _this.dataRequestCount;
 
-            //     // Creating a new Http get request.
-            //     var getRequest = new XMLHttpRequest();
+                //     // Creating a new Http get request.
+                //     var getRequest = new XMLHttpRequest();
 
-            //     // Setting the callback for the onreadystatechange Event handler which is called when the readystate changes.
-            //     getRequest.onreadystatechange = function() {
+                //     // Setting the callback for the onreadystatechange Event handler which is called when the readystate changes.
+                //     getRequest.onreadystatechange = function() {
 
-                     var restaurants = [];
+                var restaurants = [];
 
-            //         if (this.readyState == DONE && this.status == OK) {
+                //         if (this.readyState == DONE && this.status == OK) {
 
-            //             // Parsing the response and setting to a variable for readability.
-            //             var jsonResponse = JSON.parse(this.response);
+                //             // Parsing the response and setting to a variable for readability.
+                //             var jsonResponse = JSON.parse(this.response);
 
-            //             // Parsing the response and setting to a variable for readability if the array returned has values.  If the array is empty creating a default message
-            //             // to display inform the user no results were found.
-            //             restaurants = jsonResponse.restaurants.length !== 0 ? jsonResponse.restaurants : [{ name: 'No restaurants found for this location', cuisine: '', location: { address: '' } }];
+                //             // Parsing the response and setting to a variable for readability if the array returned has values.  If the array is empty creating a default message
+                //             // to display inform the user no results were found.
+                //             restaurants = jsonResponse.restaurants.length !== 0 ? jsonResponse.restaurants : [{ name: 'No restaurants found for this location', cuisine: '', location: { address: '' } }];
 
-            //             // Creating a unique label for caching the result
-            //             var stamp = args.viewVariable + args.place.id;
+                //             // Creating a unique label for caching the result
+                //             var stamp = args.viewVariable + args.place.id;
 
-            //             // Caching the result to reduce the number of Http requests.
-            //             Cache.storeResult(stamp, 3600000, restaurants);
+                //             // Caching the result to reduce the number of Http requests.
+                //             Cache.storeResult(stamp, 3600000, restaurants);
 
-            //             // Calling the callbackSync function to check if this is the most recent request made by the user.
-            //             // Passing the data and the function to call if this is the most recent request.
-                         _this.callbackSync(restaurants, callId, args, func, false);
+                //             // Calling the callbackSync function to check if this is the most recent request made by the user.
+                //             // Passing the data and the function to call if this is the most recent request.
+                _this.callbackSync(restaurants, callId, args, func, false);
 
-            //             // If the response from server is an error, log the error
-            //         } else if (this.status >= ERROR) {
-            //             var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
-            //             _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
-            //         }
-            //     };
+                //             // If the response from server is an error, log the error
+                //         } else if (this.status >= ERROR) {
+                //             var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
+                //             _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
+                //         }
+                //     };
 
 
-            //     getRequest.timeout = 5000;
-            //     getRequest.onerror = function(e) {
-            //         var err = { msg: ERR_MSG, type: 'PROCESS EVENT: ' + e.type };
-            //         _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
-            //     };
-            //     getRequest.ontimeout = function() {
-            //         var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
-            //         _this.processError([{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
-            //     };
+                //     getRequest.timeout = 5000;
+                //     getRequest.onerror = function(e) {
+                //         var err = { msg: ERR_MSG, type: 'PROCESS EVENT: ' + e.type };
+                //         _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
+                //     };
+                //     getRequest.ontimeout = function() {
+                //         var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
+                //         _this.processError([{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
+                //     };
 
-            //     // Opening and sending the request, adding the required user-key in the request header. The user key is supplied by Zomato.com.
-            //     getRequest.open('GET', 'https://developers.zomato.com/api/v2.1/search?lat=' + args.place.lat + '&lon=' + args.place.lng + '&radius=5000', true);
-            //     getRequest.setRequestHeader('Accept', 'application/json');
-            //     getRequest.setRequestHeader('user-key', _this.restaurantsApiKey);
-            //     getRequest.send();
+                //     // Opening and sending the request, adding the required user-key in the request header. The user key is supplied by Zomato.com.
+                //     getRequest.open('GET', 'https://developers.zomato.com/api/v2.1/search?lat=' + args.place.lat + '&lon=' + args.place.lng + '&radius=5000', true);
+                //     getRequest.setRequestHeader('Accept', 'application/json');
+                //     getRequest.setRequestHeader('user-key', _this.restaurantsApiKey);
+                //     getRequest.send();
             };
 
 

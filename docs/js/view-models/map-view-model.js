@@ -3,13 +3,12 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout'
     ],
-    function($, Backbone, _, ko) {
+    function($, ko) {
         var MapViewModel = function() {
             var _this = this;
+            this.template = ko.observable();
             this.showMap = ko.observable(true);
             return this;
         };

@@ -3,14 +3,14 @@
  */
 define([
         'jquery',
-        'backbone',
-        'underscore',
         'knockout',
         'main_controller'
     ],
-    function($, Backbone, _, ko, MainController) {
+    function($, ko, MainController) {
         var WeatherListViewModel = function(place, data, isError, main) {
             var _this = this;
+            this.template = ko.observable();
+            this.showTab = ko.observable(true);
             var Main = main;
             this.data = data.data;
             this.currentCond = _this.data.current_condition[0];

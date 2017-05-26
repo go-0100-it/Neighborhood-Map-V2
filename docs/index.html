@@ -27,14 +27,11 @@
     <div class="background-image-container">
         <img id="background-img" src="res/images/silhouette.jpg">
     </div>
-    <nav class="nav-bar" id="nav"></nav>
+    <nav class="nav-bar" id="nav" data-bind="html: template"></nav>
     <div class="container">
-        <div class="container-view" id="container-view">
-            <div class="spinner-container">
-                <img class="main-spinner" src="res/images/loading-11.gif" />
-            </div>
-        </div>
-        <div class="map-container-view" id="map-container-view"></div>
+        <div class="tabs-container-view" id="tabs-container-view" data-bind="visible: showTabs, html: template"></div>
+        <div class="tab-container-view" id="tab-container-view" data-bind="visible: showTab, html: template"></div>
+        <div class="map-container-view" id="map-container-view" data-bind="visible: showMap, html: template"></div>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcqT6Cvr1Qr7B3BqhkinjManD4gywWGHA" async defer></script>
 </body>
