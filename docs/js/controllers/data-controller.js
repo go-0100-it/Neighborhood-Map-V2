@@ -46,6 +46,9 @@ define([
             // The API key supplied by https://worldweatheronline.com and is required to access the World Weather Online API.
             this.weatherApiKey = 'e699f514c84a4a1c98f84105171005';
 
+            // The API key supplied by https://developers.google.com/places/web-service/get-api-key.com and is required to access the Google Places API.
+            this.othersApiKey = 'AIzaSyClTOsNQkkizK80JSULn9qwCLq8Fzb0aos';
+
 
 
 
@@ -322,70 +325,68 @@ define([
 
 
             /**
-             * A function to query the Zoopla API for a list of restaurants local to the selected place.  The place data is passed in the args object.
+             * A function to query the Google Places API for a list of places of a type selected by the user that is local to the selected place.  The place data is passed in the args object.
              * @param {object} args - is an object to define the view and view model to be created, it will be passed to the callback function(func)
              * when calling it.
              * @param {function} func - the callback function to be passed to the callbackSync function after the request has been processed.  This 
              * function will create the view and view model necessary to display the data, returned by the HTTP request, to the user.
              */
-            this.getOthersList = function(args, func) {
+            this.getOthersList = function(args, func, type) {
 
-                //     // Incrementing the dataRequestCount variable by 1 every time a request is made(this code is run).
+                // Incrementing the dataRequestCount variable by 1 every time a request is made(this code is run).
                 _this.dataRequestCount += 1;
 
-                //     // Capturing the current dataRequestCount value as this requests id.
+                // Capturing the current dataRequestCount value as this requests id.
                 var callId = _this.dataRequestCount;
 
-                //     // Creating a new Http get request.
-                //     var getRequest = new XMLHttpRequest();
+                // Creating a new Http get request.
+                var getRequest = new XMLHttpRequest();
 
-                //     // Setting the callback for the onreadystatechange Event handler which is called when the readystate changes.
-                //     getRequest.onreadystatechange = function() {
+                // Setting the callback for the onreadystatechange Event handler which is called when the readystate changes.
+                getRequest.onreadystatechange = function() {
 
-                var restaurants = [];
+                    var others = [];
 
-                //         if (this.readyState == DONE && this.status == OK) {
+                    if (this.readyState == DONE && this.status == OK) {
 
-                //             // Parsing the response and setting to a variable for readability.
-                //             var jsonResponse = JSON.parse(this.response);
+                        // Parsing the response and setting to a variable for readability.
+                        var jsonResponse = JSON.parse(this.response);
 
-                //             // Parsing the response and setting to a variable for readability if the array returned has values.  If the array is empty creating a default message
-                //             // to display inform the user no results were found.
-                //             restaurants = jsonResponse.restaurants.length !== 0 ? jsonResponse.restaurants : [{ name: 'No restaurants found for this location', cuisine: '', location: { address: '' } }];
+                        // Parsing the response and setting to a variable for readability if the array returned has values.  If the array is empty creating a default message
+                        // to display inform the user no results were found.
+                        others = jsonResponse.results.length !== 0 ? jsonResponse.results : [{ name: 'No restaurants found for this location', cuisine: '', vicinity: '' }];
 
-                //             // Creating a unique label for caching the result
-                //             var stamp = args.viewVariable + args.place.id;
+                        // Creating a unique label for caching the result
+                        var stamp = args.viewVariable + args.place.id;
 
-                //             // Caching the result to reduce the number of Http requests.
-                //             Cache.storeResult(stamp, 3600000, restaurants);
+                        // Caching the result to reduce the number of Http requests.
+                        Cache.storeResult(stamp, 3600000, others);
 
-                //             // Calling the callbackSync function to check if this is the most recent request made by the user.
-                //             // Passing the data and the function to call if this is the most recent request.
-                _this.callbackSync(restaurants, callId, args, func, false);
+                        // Calling the callbackSync function to check if this is the most recent request made by the user.
+                        // Passing the data and the function to call if this is the most recent request.
+                        _this.callbackSync(others, callId, args, func, false);
 
-                //             // If the response from server is an error, log the error
-                //         } else if (this.status >= ERROR) {
-                //             var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
-                //             _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
-                //         }
-                //     };
+                        // If the response from server is an error, log the error
+                    } else if (this.status >= ERROR) {
+                        var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
+                        _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
+                    }
+                };
 
 
-                //     getRequest.timeout = 5000;
-                //     getRequest.onerror = function(e) {
-                //         var err = { msg: ERR_MSG, type: 'PROCESS EVENT: ' + e.type };
-                //         _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
-                //     };
-                //     getRequest.ontimeout = function() {
-                //         var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
-                //         _this.processError([{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
-                //     };
+                getRequest.timeout = 5000;
+                getRequest.onerror = function(e) {
+                    var err = { msg: ERR_MSG, type: 'PROCESS EVENT: ' + e.type };
+                    _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
+                };
+                getRequest.ontimeout = function() {
+                    var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
+                    _this.processError([{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
+                };
 
-                //     // Opening and sending the request, adding the required user-key in the request header. The user key is supplied by Zomato.com.
-                //     getRequest.open('GET', 'https://developers.zomato.com/api/v2.1/search?lat=' + args.place.lat + '&lon=' + args.place.lng + '&radius=5000', true);
-                //     getRequest.setRequestHeader('Accept', 'application/json');
-                //     getRequest.setRequestHeader('user-key', _this.restaurantsApiKey);
-                //     getRequest.send();
+                // Opening and sending the request, adding the required user-key in the request. The user key is supplied by Googles API.
+                getRequest.open('GET', 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + args.place.lat + ',' + args.place.lng + '&radius=500&type=' + type + '&key=' + othersApiKey, true);
+                getRequest.send();
             };
 
 

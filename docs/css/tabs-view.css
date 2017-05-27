@@ -149,7 +149,10 @@
         width: 100%;
         top: 34px;
     }
-    .place-info-container,
+    .place-info-container {
+        width: 100%;
+        margin-top: 100px;
+    }
     .tab-container,
     .tabs-container-view,
     .tab-container-view,
