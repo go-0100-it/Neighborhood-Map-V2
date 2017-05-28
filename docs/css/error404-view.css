@@ -1,0 +1,16 @@
+.error404-view-css-loaded {
+    height: 1px;
+    text-align: center;
+}
+
+.error-container {
+    margin: 0 auto;
+    margin-top: 23Vh;
+    width: 65%;
+}
+
+@media only screen and (max-width: 900px) {
+    .error404-img {
+        width: 70%;
+    }
+}

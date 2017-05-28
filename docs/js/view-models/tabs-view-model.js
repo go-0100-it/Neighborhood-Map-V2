@@ -10,7 +10,7 @@ define([
             var _this = this;
             this.template = ko.observable();
             this.showTabs = ko.observable(true);
-            this.tabsList = ['events', 'weather', 'restaurants', 'others'];
+            this.tabsList = ['events', 'weather', 'restaurants'];
             this.place = ko.observable(place);
             this.id = ko.observable(this.place().id);
             this.name = ko.observable(this.place().name);
@@ -36,16 +36,16 @@ define([
                 _this.lng(_this.place().lng);
             });
             this.onClickWeatherTab = function() {
+                console.dir(_this.place());
                 _this.navigateTab(_this.tabsList[1]);
             };
             this.onClickRestaurantsTab = function() {
+                console.dir(_this.place());
                 _this.navigateTab(_this.tabsList[2]);
             };
             this.onClickEventsTab = function() {
+                console.dir(_this.place());
                 _this.navigateTab(_this.tabsList[0]);
-            };
-            this.onClickOthersTab = function() {
-                _this.navigateTab(_this.tabsList[3]);
             };
             this.onClickMapIcon = function() {
                 Backbone.history.navigate('#places/' + _this.id() + '/' + _this.name() + '/' + _this.address() + '/' + _this.lat() + '/' + _this.lng(), { trigger: true });

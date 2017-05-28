@@ -10,8 +10,8 @@ define([
         'events_list_view_model',
         'weather_list_view_model',
         'restaurants_list_view_model',
-        'others_list_view_model',
         'spinner_view_model',
+        'error404_view_model',
         'data_controller',
         'map_controller',
         'firebase_helper'
@@ -25,8 +25,8 @@ define([
         EventsListViewModel,
         WeatherListViewModel,
         RestaurantsListViewModel,
-        OthersListViewModel,
         SpinnerViewModel,
+        ErrorViewModel,
         DataController,
         Map,
         FBHelper
@@ -43,6 +43,8 @@ define([
          */
         var Main = function() {
             var _this = this;
+            let VISIBLE = true;
+            let HIDDEN = false;
 
             /** */
             this.dataController = new DataController();
@@ -56,11 +58,12 @@ define([
             this.renderDrawerListView = function(place) {
 
                 //
+
                 var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
 
                 //
                 if (!_this.drawerListViewModel) {
-
+                    console.log('Rendering drawer view');
                     //
                     _this.drawerListViewModel = new DrawerListViewModel();
 
@@ -114,6 +117,8 @@ define([
                     ko.applyBindings(_this.drawerListViewModel, $('#drawer-menu-container')[0]);
                     //
                 } else {
+                    console.log('Rendering Map');
+                    console.dir(place);
                     _this.renderMap(place);
                 }
             };
@@ -128,27 +133,34 @@ define([
             this.renderMap = function(place) {
 
                 var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
-                if (_this.tabsViewModel) {
-                    _this.tabsViewModel.showTabs(false);
-                    _this.removeCurrentTab();
-                }
+                _this.setTabsVisibility(HIDDEN, true);
+                _this.setErrorVisibility(HIDDEN);
                 if (_this.map) {
-                    _this.map.mapViewModel.showMap(true);
-                    _this.map.refreshMap(loc);
+                    _this.setMapVisibility(VISIBLE, loc);
                 } else {
-                    _this.map = new Map();
-                    _this.map.init();
-                    _this.drawerListViewModel.map = _this.map;
-                    //
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(function(position) {
-                            var defaultLoc = loc ? loc : {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude
-                            };
-                            _this.map.centerOnLocation(defaultLoc);
-                        });
-                    }
+                    _this.createMap(loc);
+                }
+            };
+
+
+
+
+            /**
+             *  
+             */
+            this.createMap = function(loc) {
+                _this.map = new Map();
+                _this.map.init();
+                _this.drawerListViewModel.map = _this.map;
+                //
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var defaultLoc = loc ? loc : {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        _this.map.centerOnLocation(defaultLoc);
+                    });
                 }
             };
 
@@ -162,29 +174,34 @@ define([
             this.renderTabsView = function(place, view) {
 
                 _this.renderDrawerListView(place);
-
-                if (_this.map.mapViewModel) {
-                    _this.map.mapViewModel.showMap(false);
-                }
-
+                _this.setMapVisibility(HIDDEN);
+                _this.setErrorVisibility(HIDDEN);
                 if (_this.tabsViewModel) {
-                    _this.tabsViewModel.place(place);
-                    _this.tabsViewModel.showTabs(true);
+                    _this.setTabsVisibility(VISIBLE, null, place);
                 } else {
-                    //
-                    _this.tabsViewModel = new TabsViewModel(place);
-
-                    ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
-
-                    _this.tabsViewModel.template(tpl.get('tabs-view'));
-
-                    ko.cleanNode($('#tabs-container-view')[0]);
-
-                    ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
-
+                    _this.createTabsView(place);
                 }
                 _this.renderSpinner();
                 _this.renderTabView(place, view);
+            };
+
+
+
+
+            /**
+             * @param {object} place -  
+             */
+            this.createTabsView = function(place) {
+                //
+                _this.tabsViewModel = new TabsViewModel(place);
+
+                ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
+
+                _this.tabsViewModel.template(tpl.get('tabs-view'));
+
+                ko.cleanNode($('#tabs-container-view')[0]);
+
+                ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
             };
 
 
@@ -248,25 +265,11 @@ define([
                         _this.tabsViewModel.title('Local Restaurants');
                         _this.dataController.queryCache(viewConfigData, _this.dataController.getRestaurantsList, _this.renderView);
                         break;
-
-                    case 'others':
-
-                        //
-                        viewConfigData = {
-                            viewVariable: 'othersView',
-                            viewModelVariable: 'othersListViewModel',
-                            viewModelConstructor: OthersListViewModel,
-                            template: tpl.get('others-view'),
-                            el: '#others-view',
-                            place: place
-                        };
-
-                        //
-                        _this.tabsViewModel.title('Other Places');
-                        _this.dataController.queryCache(viewConfigData, _this.dataController.getOthersList, _this.renderView);
-                        break;
                 }
             };
+
+
+
 
             /**
              * 
@@ -291,35 +294,86 @@ define([
 
                 ko.applyBindings(_this[vcd.viewModelVariable], $(vcd.el)[0]);
 
-                _this.currentTab = {tab: $(vcd.el)[0], viewModel: _this[vcd.viewModelVariable]};
-                
+                _this.currentTab = { tab: $(vcd.el)[0], viewModel: _this[vcd.viewModelVariable] };
+
             };
 
 
-            this.renderSpinner = function(){
+            this.renderSpinner = function() {
                 viewConfigData = {
-                            viewVariable: 'spinnerView',
-                            viewModelVariable: 'spinnerViewModel',
-                            viewModelConstructor: SpinnerViewModel,
-                            template: tpl.get('spinner-view'),
-                            el: '#spinner-view',
-                            place: null
-                        };
+                    viewVariable: 'spinnerView',
+                    viewModelVariable: 'spinnerViewModel',
+                    viewModelConstructor: SpinnerViewModel,
+                    template: tpl.get('spinner-view'),
+                    el: '#spinner-view',
+                    place: null
+                };
 
-                        //
-                        _this.renderView(null, viewConfigData, false);
+                //
+                _this.renderView(null, viewConfigData, false);
             };
 
 
-            this.removeCurrentTab = function(){
-                if(_this.currentTab){
+            this.removeCurrentTab = function() {
+                if (_this.currentTab) {
                     ko.removeNode(_this.currentTab.tab);
                     _this.currentTab = null;
                 }
             };
 
-        };
 
+            this.setMapVisibility = function(state, loc) {
+                if (_this.map.mapViewModel) {
+                    _this.map.mapViewModel.showMap(state);
+                    if (loc) {
+                        _this.map.refreshMap(loc);
+                    }
+                }
+            };
+
+            this.setTabsVisibility = function(state, remove, place) {
+                if (_this.tabsViewModel) {
+                    if (place) {
+                        _this.tabsViewModel.place(place);
+                    }
+                    if (remove) {
+                        _this.removeCurrentTab();
+                    }
+                    _this.tabsViewModel.showTabs(state);
+                }
+            };
+
+            this.setErrorVisibility = function(state) {
+                if (_this.errorViewModel) {
+                    _this.errorViewModel.showError(state);
+                }
+            };
+
+            this.renderErrorView = function() {
+                _this.renderDrawerListView();
+                _this.setMapVisibility(HIDDEN);
+                _this.setTabsVisibility(HIDDEN, null, true);
+                if (_this.errorViewModel) {
+                    _this.setErrorVisibility(VISIBLE);
+                } else {
+                    _this.createErrorView();
+                }
+            };
+
+            this.createErrorView = function() {
+                //
+                _this.errorViewModel = new ErrorViewModel();
+
+                ko.applyBindings(_this.errorViewModel, $('#error-container-view')[0]);
+
+                _this.errorViewModel.template(tpl.get('error404-view'));
+
+                ko.cleanNode($('#error-container-view')[0]);
+
+                ko.applyBindings(_this.errorViewModel, $('#error-view')[0]);
+            };
+
+        };
         //
         return new Main();
     });

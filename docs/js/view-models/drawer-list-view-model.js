@@ -76,10 +76,8 @@ define([
 
                 if (!_this.map.mapViewModel.showMap()) {
                     Backbone.history.navigate('#places/' + place.id + '/' + place.name + '/' + place.address + '/' + place.lat + '/' + place.lng, { trigger: true });
-                    _this.centerLocation(place);
-                } else {
-                    _this.centerLocation(place);
                 }
+                _this.centerLocation(place);
                 _this.toggleDrawerList();
             };
 

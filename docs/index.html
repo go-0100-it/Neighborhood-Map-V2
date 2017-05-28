@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>Neighborhood Map</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/navbar-view.css">
@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="css/events-view.css">
     <link rel="stylesheet" type="text/css" href="css/weather-view.css">
     <link rel="stylesheet" type="text/css" href="css/map.css">
+    <link rel="stylesheet" type="text/css" href="css/error404-view.css">
     <script data-main="js/config" src="js/require.min.js"></script>
 </head>
 
@@ -37,6 +38,7 @@
         <div class="tabs-container-view" id="tabs-container-view" data-bind="html: template"></div>
         <div class="tab-container-view" id="tab-container" data-bind="html: template"></div>
         <div class="map-container-view" id="map-container-view" data-bind="visible: showMap, html: template"></div>
+        <div class="error-container-view" id="error-container-view" data-bind="html: template"></div>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcqT6Cvr1Qr7B3BqhkinjManD4gywWGHA" async defer></script>
 </body>

@@ -30,7 +30,7 @@ define([
                 };
                 alert('Adding new place ');
                 console.dir(newPlace);
-                Main.eventsViewModel.addPlace(newPlace);
+                Main.drawerListViewModel.addPlace(newPlace);
             };
             return this;
         };
