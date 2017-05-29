@@ -53,14 +53,14 @@ define([
              * Using this function to call only the render function associated with the most recent data requested by the user.  If the user has previously requested data and 
              * commits to subsequent data requests before the previous data has been processed and rendered, then only the last data request will be processed and rendered.
              * @param {object} data - The data being passed to the callback function.
-             * @param {string} callbackId - The id of the requested callback(the dataRequestCount value captured when the request was made).
+             * @param {string} callId - The id of the requested callback(the dataRequestCount value captured when the request was made).
              * @param {array} args - The array of args being passed to the callback function.
              * @param {function} func - The callback function.
              */
-            this.callbackSync = function(data, callbackId, args, func, isError) {
+            this.callbackSync = function(data, callId, args, func, isError) {
 
-                // Checking if the callbackId matches the current data request count, if it does then it's the most recent, then call the function passed in (The render tabs view function)
-                if (callbackId === _this.dataRequestCount) {
+                // Checking if the callId matches the current data request count, if it does then it's the most recent, then call the function passed in (The render tabs view function)
+                if (callId === _this.dataRequestCount) {
                     func(data, args, isError);
                 }
             };
@@ -119,10 +119,20 @@ define([
              */
             this.getEventsDataList = function(args, func) {
 
+
+                // Creating a custom timeout to process an error if not cleared before the specified time value.
                 _this.eventsTimeOut = window.setInterval(function() {
+
+                    // Removing interval at first invokation to ensure it only runs once
                     window.clearInterval(_this.eventsTimeOut);
+
+                    // Creating an err object which will be used to log the error to the console.
                     var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
+
+                    // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
+                    // to the user.
                     _this.processError(err, { events: { event: [{ title: err.msg, image: null, start_time: '', venue_url: '', venue_address: '' }] } }, callId, args, func);
+                
                 }, 20000);
 
                 // Incrementing the dataRequestCount variable by 1 every time a request is made(this code is run).
@@ -137,12 +147,12 @@ define([
                 // Creating an obj literal to pass as the API's request parameters.
                 var oArgs = {
                     app_key: _this.eventsApiKey,
-                    q: "events",
+                    q: 'events',
                     where: where,
                     within: 10,
-                    "date": _this.getFormattedDate() + '-' + _this.getFormattedDate(1),
+                    'date': _this.getFormattedDate() + '-' + _this.getFormattedDate(1),
                     page_size: 40,
-                    sort_order: "date",
+                    sort_order: 'date',
                     sort_direction: 'ascending'
                 };
 
@@ -150,7 +160,7 @@ define([
                  * Making the data request call via the EVDB.API.call function(contained in Eventful's api.js file) and 
                  * passing the arguments to filter the search and the callback function to run when the result is ready.
                  */
-                EVDB.API.call("/events/search", oArgs, function(oData) {
+                EVDB.API.call('/events/search', oArgs, function(oData) {
 
                     window.clearInterval(_this.eventsTimeOut);
 
@@ -275,7 +285,7 @@ define([
                     if (this.readyState == DONE && this.status == OK) {
 
                         // Parsing the response and setting to a variable for readability.
-                        var jsonResponse = JSON.parse(this.response);
+                        var jsonResponse = this.response ? JSON.parse(this.response) : { restaurants: [] };
 
                         // Parsing the response and setting to a variable for readability if the array returned has values.  If the array is empty creating a default message
                         // to display inform the user no results were found.
@@ -293,19 +303,44 @@ define([
 
                         // If the response from server is an error, log the error
                     } else if (this.status >= ERROR) {
+
+                        // Creating an err object which will be used to log the error to the console.
                         var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
+
+                        // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
+                        // to the user.
                         _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
                     }
                 };
 
+                // Setting the timeout time value.  This is a small request and shouldn't take to long.
+                getRequest.timeout = 10000;
 
-                getRequest.timeout = 5000;
+
+
+
+                // Overriding the onerror event handler that is called when an error occurs during the data request.
                 getRequest.onerror = function(e) {
+
+                    // Creating an err object which will be used to log the error to the console.
                     var err = { msg: ERR_MSG, type: 'PROCESS EVENT: ' + e.type };
+
+                    // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
+                    // to the user.
                     _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
                 };
+
+
+
+
+                // Overriding the ontimeout event handler that is called when a response isn't received within the specified time value.
                 getRequest.ontimeout = function() {
+
+                    // Creating an err object which will be used to log the error to the console.
                     var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
+
+                    // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
+                    // to the user.
                     _this.processError([{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
                 };
 
@@ -337,7 +372,10 @@ define([
                 // Creating a new Http get request.
                 var getRequest = new XMLHttpRequest();
 
-                // Setting the callback for the onreadystatechange Event handler which is called when the readystate changes.
+
+
+
+                // Overriding the onreadystatechange event handler which is called when the readystate changes.
                 getRequest.onreadystatechange = function() {
 
                     var currentWeather;
@@ -345,7 +383,10 @@ define([
                     if (getRequest.readyState == DONE && getRequest.status == OK) {
 
                         // Parsing the response and setting to a variable for readability.
-                        currentWeather = getRequest.response !== '' ? JSON.parse(getRequest.response) : [{ name: 'No weather data found for this location', location: { address: '' } }];
+                        var jsonResponse = getRequest.response ? JSON.parse(getRequest.response) : null;
+
+                        // Parsing the response and setting to a variable for readability.
+                        currentWeather = jsonResponse ? JSON.parse(getRequest.response) : [{ name: 'No weather data found for this location', location: { address: '' } }];
 
                         // Creating a unique label for caching the result
                         var stamp = args.viewVariable + args.place.id;
@@ -363,16 +404,40 @@ define([
                         _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
                     }
                 };
-                // Opening and sending the request. The user key is supplied by Worldweatheronline.com.
-                getRequest.timeout = 5000;
+                
+                // Setting the timeout time value.  This is a small request and shouldn't take to long.
+                getRequest.timeout = 8000;
+
+
+
+
+                // Overriding the onerror event handler that is called when an error occurs during the data request.
                 getRequest.onerror = function(e) {
+
+                    // Creating an err object which will be used to log the error to the console.
                     var err = { msg: ERR_MSG, type: 'PROCESS EVENT: ' + e.type };
+
+                    // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
+                    // to the user.
                     _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
                 };
+
+
+
+
+                // Overriding the ontimeout event handler that is called when a response isn't received within the specified time value.
                 getRequest.ontimeout = function() {
+
+                    // Creating an err object which will be used to log the error to the console.
                     var err = { msg: TIMEOUT_MSG, type: 'ERROR: Timeout' };
+
+                    // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
+                    // to the user.
                     _this.processError(err, [{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
                 };
+
+
+                // Opening and sending the request. The user key is supplied by Worldweatheronline.com.
                 getRequest.open('GET', 'https://api.worldweatheronline.com/premium/v1/weather.ashx?key=' + _this.weatherApiKey + '&q=' + args.place.lat + ',' + args.place.lng + '&format=json&num_of_days=1', true);
                 getRequest.send();
 
@@ -380,7 +445,14 @@ define([
 
 
 
-
+            /**
+             * A common function to log an error that occured during the data request.
+             * @param {object} err - the object containing the error details to be logged to the console.
+             * @param {object} errMsg - the pseudo object passed to the view with the error details.  Will be rendered as the one and only list item.
+             * @param {string} callId - The id of the requested callback to be passed on to the callBackSync function.
+             * @param {array} args - The array of args being passed on to the callback function.
+             * @param {function} func - The callback function to be passed on to the callBackSync function.
+             */
             this.processError = function(err, errMsg, callId, args, func) {
                 console.error(err.msg);
                 console.error(err.type);

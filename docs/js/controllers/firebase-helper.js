@@ -31,7 +31,7 @@ define(['jquery',
             this.initAuth = function(func1, func2, request) {
 
                 /**
-                 * 
+                 * Overriding the onAuthStateChanged event handler to be notified when the users logged in status changes.
                  */
                 firebase.auth().onAuthStateChanged(function(user) {
 
