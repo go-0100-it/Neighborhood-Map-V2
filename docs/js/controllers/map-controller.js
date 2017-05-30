@@ -1,5 +1,5 @@
 /**
- * Using Require.js to define a module responsible for creating a Controller object.
+ * Using Require.js to define a module responsible for creating a Map object.
  */
 define([
         'jquery',
@@ -16,40 +16,59 @@ define([
 
 
         /**
-         * @constructor -
-         * @return {object} -
+         * @constructor - A function constructor to create a Map object which is responsible for all functions related to rendering and
+         * manipulating the google map including searching for addresses, adding markers and info windows.
+         * @return {object} - Returns a Map object.
          */
         var Map = function() {
+
+            // Getting a reference to this Map objects execution context for later reference.
             var _this = this;
+
+            // Boolean value to be set when the search function is processing a search value.
             this.searching = false;
+
+            // Declaring and intializing an array to keep the created map markers.
             this.markers = [];
+
+            // Declaring and initializing an array to keep the created info windows.
             this.infoWindows = [];
+
+            // Declaring and intitializong a variable for reference to the currently open info window.
             this.openWindow = null;
+
+            // Declaring and intitializong a variable for reference to the marker corresponding to the currently open info window.
             this.openMarker = null;
 
 
 
             /**
-             * 
+             * A function to initialize the map.  Intitialization will create the map viewModel, render the map html template and 
+             * create a new google map.
              */
             this.init = function() {
 
-                //
+                // Checking that google and google maps has been loaded.
                 if (typeof google === 'object' && typeof google.maps === 'object') {
 
-                    //
+                    // Creating the map view model.
                     _this.mapViewModel = new MapViewModel();
+
+                    // Adding the map html template to render the map container.
                     _this.mapViewModel.template(tpl.get('map'));
+
+                    // Applying KO's bindings to the map container.  Only using to hide and show the map.
                     ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);
 
 
-                    //
+                    // Creating a google.maps.Map object which is the actual map.
                     _this.map = new google.maps.Map(document.getElementById('map'), {
                         zoom: 8
                     });
-
-                    //
+                    
                 } else {
+
+                    // If google or google.maps has not been loaded alert the user.
                     alert("Google's Maps API is currently unavailable");
                 }
             };
@@ -58,17 +77,17 @@ define([
 
 
             /**
-             * 
-             * @param {object} loc - 
+             * A function necessary to refresh the map when unhiding.  If this is not called when unhiding the map the map does not seem
+             * to rerender properly.
+             * @param {object} loc - the location object containing the latitude and longitude coordinates to center the map to.
              */
             this.refreshMap = function(loc) {
 
-                //
+                // Triggering the google maps resize event to help spur the rerendering of the map.
                 google.maps.event.trigger(_this.map, 'resize');
 
-                //
+                // Calling the custom centerOnLocation function which will cause the view to pan to the map location coordinates passed in.
                 _this.centerOnLocation(loc);
-
             };
 
 
