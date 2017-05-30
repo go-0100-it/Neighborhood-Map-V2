@@ -13,7 +13,7 @@ requirejs.config({
         /* Libraries */
         jquery: 'libs/jquery.min',
         underscore: 'libs/underscore.min',
-        backbone: 'libs/backbone',
+        backbone: 'libs/backbone.min',
         knockout: 'libs/knockout.min',
         app: 'app',
         util: 'util',
