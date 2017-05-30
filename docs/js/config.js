@@ -45,31 +45,64 @@ requirejs.config({
     },
 });
 // Start the main app logic.
-requirejs([
-    'jquery',
-    'underscore',
-    'backbone',
-    'knockout',
-    'util',
-    'firebase_app'
-
-], function($, _, bb, ko, tpl) {
-    tpl.loadTemplates(['drawer-list-view', 'map', 'tabs-view', 'events-view', 'weather-view', 'restaurants-view', 'spinner-view', 'error404-view'], function() {
-        // Start the main app logic.
-        requirejs(['firebase_auth', 'firebase_data'], function() {
-            // Initialize Firebase
-            var configFB = {
-                apiKey: "AIzaSyAlFaHJIu2go9re03lp6AaunDBfuI9GkCk",
-                authDomain: "neighbourhoodmap-1491157111381.firebaseapp.com",
-                databaseURL: "https://neighbourhoodmap-1491157111381.firebaseio.com",
-                projectId: "neighbourhoodmap-1491157111381",
-                storageBucket: "neighbourhoodmap-1491157111381.appspot.com",
-                messagingSenderId: "139908232326"
-            };
-            firebase.initializeApp(configFB);
-            requirejs(['app'], function(app) {
-                app.initialize();
+requirejs(
+    [
+        'jquery',
+        'underscore',
+        'backbone',
+        'knockout',
+        'util',
+        'firebase_app'
+    ],
+    function(
+        $,
+        _,
+        bb,
+        ko,
+        tpl
+    ) {
+        tpl.loadTemplates(
+            [
+                'drawer-list-view',
+                'map',
+                'tabs-view',
+                'events-view',
+                'weather-view',
+                'restaurants-view',
+                'spinner-view',
+                'error404-view'
+            ],
+            function() {
+                requirejs(
+                    [
+                        'firebase_auth',
+                        'firebase_data',
+                        'css!css/navbar-view.css',
+                        'css!css/map.css',
+                        'css!css/main-view.css',
+                        'css!css/drawer-menu.css'
+                    ],
+                    function() {
+                        // Initialize Firebase
+                        var configFB = {
+                            apiKey: "AIzaSyAlFaHJIu2go9re03lp6AaunDBfuI9GkCk",
+                            authDomain: "neighbourhoodmap-1491157111381.firebaseapp.com",
+                            databaseURL: "https://neighbourhoodmap-1491157111381.firebaseio.com",
+                            projectId: "neighbourhoodmap-1491157111381",
+                            storageBucket: "neighbourhoodmap-1491157111381.appspot.com",
+                            messagingSenderId: "139908232326"
+                        };
+                        firebase.initializeApp(configFB);
+                        requirejs(
+                            [
+                                'app'
+                            ],
+                            function(
+                                app
+                            ) {
+                                //
+                                app.initialize();
+                            });
+                    });
             });
-        });
     });
-});

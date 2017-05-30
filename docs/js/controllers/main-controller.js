@@ -6,30 +6,18 @@ define([
         'knockout',
         'util',
         'drawer_list_view_model',
-        'tabs_view_model',
-        'events_list_view_model',
-        'weather_list_view_model',
-        'restaurants_list_view_model',
-        'spinner_view_model',
-        'error404_view_model',
-        'data_controller',
         'map_controller',
-        'firebase_helper'
+        'firebase_helper',
+        'data_controller'
     ],
     function(
         $,
         ko,
         tpl,
         DrawerListViewModel,
-        TabsViewModel,
-        EventsListViewModel,
-        WeatherListViewModel,
-        RestaurantsListViewModel,
-        SpinnerViewModel,
-        ErrorViewModel,
-        DataController,
         Map,
-        FBHelper
+        FBHelper,
+        DataController
     ) {
 
 
@@ -47,23 +35,22 @@ define([
             let HIDDEN = false;
 
             /** */
-            this.dataController = new DataController();
+            _this.dataController = new DataController();
 
 
 
             /**
              * 
-             * @param {object} place - The author of the book.
+             * @param {object} place - 
              */
             this.renderDrawerListView = function(place) {
 
                 //
-
                 var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
 
                 //
                 if (!_this.drawerListViewModel) {
-                    console.log('Rendering drawer view');
+
                     //
                     _this.drawerListViewModel = new DrawerListViewModel();
 
@@ -85,6 +72,7 @@ define([
                         var isRequested = true;
                         locationRequest = { centerOnLocation: _this.map.centerOnLocation, centerRequested: isRequested, locRequested: loc };
                     }
+
                     //
                     FBHelper.initAuth(_this.dataController.getUserPlaces, _this.drawerListViewModel.pushPlace, locationRequest);
 
@@ -117,8 +105,8 @@ define([
                     ko.applyBindings(_this.drawerListViewModel, $('#drawer-menu-container')[0]);
                     //
                 } else {
-                    console.log('Rendering Map');
-                    console.dir(place);
+
+                    //
                     _this.renderMap(place);
                 }
             };
@@ -193,18 +181,27 @@ define([
              * @param {object} place -  
              */
             this.createTabsView = function(place) {
-                //
-                _this.tabsViewModel = new TabsViewModel(place);
 
-                ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
+                requirejs(
+                    [
+                        'tabs_view_model',
+                        'css!css/tabs-view.css'
+                    ],
+                    function(
+                        TabsViewModel
+                    ) {
+                        //
+                        _this.tabsViewModel = new TabsViewModel(place);
 
-                _this.tabsViewModel.template(tpl.get('tabs-view'));
+                        ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
 
-                ko.cleanNode($('#tabs-container-view')[0]);
+                        _this.tabsViewModel.template(tpl.get('tabs-view'));
 
-                ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
+                        ko.cleanNode($('#tabs-container-view')[0]);
+
+                        ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
+                    });
             };
-
 
 
 
@@ -214,74 +211,89 @@ define([
              * @param {string} view - the type of view needed to display the requested data.
              */
             this.renderTabView = function(place, view) {
+                requirejs(
+                    [
+                        'css!css/weather-view.css',
+                        'css!css/events-view.css',
+                        'events_list_view_model',
+                        'weather_list_view_model',
+                        'restaurants_list_view_model'
+                    ],
+                    function(
+                        weatherCss,
+                        eventsCss,
+                        EventsListViewModel,
+                        WeatherListViewModel,
+                        RestaurantsListViewModel
+                    ) {
+                        //
+                        switch (view) {
+                            case 'events':
 
-                    //
-                    switch (view) {
-                        case 'events':
+                                // Creating an object literal containing the necessary data to later (after receiving a data response) render
+                                // the view corresponding to the data returned.
+                                viewConfigData = {
+                                    viewVariable: 'eventsView',
+                                    viewModelVariable: 'eventsListViewModel',
+                                    viewModelConstructor: EventsListViewModel,
+                                    template: tpl.get('events-view'),
+                                    el: '#events-view',
+                                    place: place
+                                };
 
-                            // Creating an object literal containing the necessary data to later (after receiving a data response) render
-                            // the view corresponding to the data returned.
-                            viewConfigData = {
-                                viewVariable: 'eventsView',
-                                viewModelVariable: 'eventsListViewModel',
-                                viewModelConstructor: EventsListViewModel,
-                                template: tpl.get('events-view'),
-                                el: '#events-view',
-                                place: place
-                            };
+                                _this.tabsViewModel.title('Local Events');
 
-                            _this.tabsViewModel.title('Local Events');
+                                // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
+                                // the first one will be called if no data was found in the cache.  The second function will be called when data
+                                // becomes available, either by retriving it from the cache or receiving a response from a AJAX request.
+                                _this.dataController.queryCache(viewConfigData, _this.dataController.getEventsDataList, _this.renderView);
+                                break;
 
-                            // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
-                            // the first one will be called if no data was found in the cache.  The second function will be called when data
-                            // becomes available, either by retriving it from the cache or receiving a response from a AJAX request.
-                            _this.dataController.queryCache(viewConfigData, _this.dataController.getEventsDataList, _this.renderView);
-                            break;
+                            case 'weather':
 
-                        case 'weather':
+                                // Creating an object literal containing the necessary data to later (after receiving a data response) render
+                                // the view corresponding to the data returned.
+                                viewConfigData = {
+                                    viewVariable: 'weatherView',
+                                    viewModelVariable: 'weatherListViewModel',
+                                    viewModelConstructor: WeatherListViewModel,
+                                    template: tpl.get('weather-view'),
+                                    el: '#weather-view',
+                                    place: place
+                                };
 
-                            // Creating an object literal containing the necessary data to later (after receiving a data response) render
-                            // the view corresponding to the data returned.
-                            viewConfigData = {
-                                viewVariable: 'weatherView',
-                                viewModelVariable: 'weatherListViewModel',
-                                viewModelConstructor: WeatherListViewModel,
-                                template: tpl.get('weather-view'),
-                                el: '#weather-view',
-                                place: place
-                            };
+                                _this.tabsViewModel.title('Local Weather');
 
-                            _this.tabsViewModel.title('Local Weather');
+                                // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
+                                // the first one will be called if no data was found in the cache.  The second function will be called when data
+                                // becomes available, either by retriving it from the cache or receiving a response from a AJAX request.
+                                _this.dataController.queryCache(viewConfigData, _this.dataController.getCurrentWeather, _this.renderView);
+                                break;
 
-                            // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
-                            // the first one will be called if no data was found in the cache.  The second function will be called when data
-                            // becomes available, either by retriving it from the cache or receiving a response from a AJAX request.
-                            _this.dataController.queryCache(viewConfigData, _this.dataController.getCurrentWeather, _this.renderView);
-                            break;
+                            case 'restaurants':
 
-                        case 'restaurants':
 
-                            
 
-                            // Creating an object literal containing the necessary data to later (after receiving a data response) render
-                            // the view corresponding to the data returned.
-                            viewConfigData = {
-                                viewVariable: 'restaurantsView',
-                                viewModelVariable: 'restaurantsListViewModel',
-                                viewModelConstructor: RestaurantsListViewModel,
-                                template: tpl.get('restaurants-view'),
-                                el: '#restaurants-view',
-                                place: place
-                            };
+                                // Creating an object literal containing the necessary data to later (after receiving a data response) render
+                                // the view corresponding to the data returned.
+                                viewConfigData = {
+                                    viewVariable: 'restaurantsView',
+                                    viewModelVariable: 'restaurantsListViewModel',
+                                    viewModelConstructor: RestaurantsListViewModel,
+                                    template: tpl.get('restaurants-view'),
+                                    el: '#restaurants-view',
+                                    place: place
+                                };
 
-                            _this.tabsViewModel.title('Local Restaurants');
+                                _this.tabsViewModel.title('Local Restaurants');
 
-                            // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
-                            // the first one will be called if no data was found in the cache.  The second function will be called when data
-                            // becomes available, either by retriving it from the cache or receiving a response from a AJAX request.
-                            _this.dataController.queryCache(viewConfigData, _this.dataController.getRestaurantsList, _this.renderView);
-                            break;
-                    }
+                                // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
+                                // the first one will be called if no data was found in the cache.  The second function will be called when data
+                                // becomes available, either by retriving it from the cache or receiving a response from a AJAX request.
+                                _this.dataController.queryCache(viewConfigData, _this.dataController.getRestaurantsList, _this.renderView);
+                                break;
+                        }
+                    });
             };
 
 
@@ -323,28 +335,38 @@ define([
 
 
 
-             /**
+            /**
              * 
              * 
              */
             this.renderSpinner = function() {
-                viewConfigData = {
-                    viewVariable: 'spinnerView',
-                    viewModelVariable: 'spinnerViewModel',
-                    viewModelConstructor: SpinnerViewModel,
-                    template: tpl.get('spinner-view'),
-                    el: '#spinner-view',
-                    place: null
-                };
 
-                //
-                _this.renderView(null, viewConfigData, false);
+                requirejs(
+                    [
+                        'spinner_view_model'
+                    ],
+                    function(
+                        SpinnerViewModel
+                    ) {
+
+                        viewConfigData = {
+                            viewVariable: 'spinnerView',
+                            viewModelVariable: 'spinnerViewModel',
+                            viewModelConstructor: SpinnerViewModel,
+                            template: tpl.get('spinner-view'),
+                            el: '#spinner-view',
+                            place: null
+                        };
+
+                        //
+                        _this.renderView(null, viewConfigData, false);
+                    });
             };
 
 
 
 
-             /**
+            /**
              * 
              * 
              */
@@ -358,7 +380,7 @@ define([
 
 
 
-             /**
+            /**
              * 
              * @param {boolean} state - the boolean value indicating the visibility state requested.  True for visible, false for hidden.
              * @param {object} loc - 
@@ -375,7 +397,7 @@ define([
 
 
 
-             /**
+            /**
              * 
              * @param {boolean} state - the boolean value indicating the visibility state requested.  True for visible, false for hidden.
              * @param {boolean} remove - 
@@ -396,7 +418,7 @@ define([
 
 
 
-             /**
+            /**
              * A common function to set the visibility of the errorViewModel's data-bound element.
              * @param {boolean} state - the boolean value indicating the visibility state requested.  True for visible, false for hidden.
              */
@@ -413,7 +435,7 @@ define([
 
 
 
-             /**
+            /**
              * 
              * 
              */
@@ -431,24 +453,32 @@ define([
 
 
 
-             /**
+            /**
              * 
              * 
              */
             this.createErrorView = function() {
 
-                //
-                _this.errorViewModel = new ErrorViewModel();
+                requirejs(
+                    [
+                        'error404_view_model',
+                        'css!css/error404-view.css'
+                    ],
+                    function(
+                        ErrorViewModel
+                    ) {
+                        //
+                        _this.errorViewModel = new ErrorViewModel();
 
-                ko.applyBindings(_this.errorViewModel, $('#error-container-view')[0]);
+                        ko.applyBindings(_this.errorViewModel, $('#error-container-view')[0]);
 
-                _this.errorViewModel.template(tpl.get('error404-view'));
+                        _this.errorViewModel.template(tpl.get('error404-view'));
 
-                ko.cleanNode($('#error-container-view')[0]);
+                        ko.cleanNode($('#error-container-view')[0]);
 
-                ko.applyBindings(_this.errorViewModel, $('#error-view')[0]);
+                        ko.applyBindings(_this.errorViewModel, $('#error-view')[0]);
+                    });
             };
-
         };
 
         //
