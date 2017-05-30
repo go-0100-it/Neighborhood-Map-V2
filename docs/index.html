@@ -13,15 +13,72 @@
     <title>Neighborhood Map</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="css/navbar-view.css">
-    <link rel="stylesheet" type="text/css" href="css/drawer-menu.css">
-    <link rel="stylesheet" type="text/css" href="css/main-view.css">
-    <link rel="stylesheet" type="text/css" href="css/tabs-view.css">
-    <link rel="stylesheet" type="text/css" href="css/events-view.css">
-    <link rel="stylesheet" type="text/css" href="css/weather-view.css">
-    <link rel="stylesheet" type="text/css" href="css/map.css">
-    <link rel="stylesheet" type="text/css" href="css/error404-view.css">
     <script data-main="js/config" src="js/require.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            text-align: center;
+        }
+        
+        .main-spinner {
+            width: 5vw;
+        }
+        
+        .container {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+        }
+        
+        #background-img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+        
+        .background-image-container {
+            position: fixed;
+            left: 17.5vw;
+            width: 65%;
+            height: 100vh;
+        }
+        
+        .container-view {
+            width: 65%;
+            margin: 0 auto;
+            margin-top: 165px;
+        }
+        
+        .map-container-view {
+            box-sizing: border-box;
+            padding-top: 80px;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .spinner-container {
+            width: 100%;
+            margin: 30vh auto;
+        }
+        
+        .nav-bar {
+            box-sizing: border-box;
+            box-shadow: 0 2.5px 10px #111111;
+            background-color: #6d4e35;
+            z-index: 10;
+            position: fixed;
+            width: 100%;
+            height: 80px;
+            margin: 0 auto;
+            padding: 10px 10px 10px 20px;
+        }
+        
+        .nav-spinner {
+            width: 5vw;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,7 +88,7 @@
     <nav class="nav-bar" id="nav" data-bind="html: template">
         <!-- -->
         <div class="spinner-container" id="spinner-view">
-            <img class="tabs-spinner" src="res/images/loading-11.gif" />
+            <img class="nav-spinner" src="res/images/loading-11.gif" />
         </div>
     </nav>
     <div class="container">

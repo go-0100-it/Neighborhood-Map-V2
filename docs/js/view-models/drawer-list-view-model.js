@@ -1,21 +1,35 @@
 /**
  * Using Require.js to define a module responsible for...
  */
-define([
+define(
+    [
         'jquery',
         'knockout'
     ],
-    function($, ko) {
+    function(
+        $,
+        ko
+    ) {
 
         /**
          * @param {function} func - The title of the book.
          * @param {string} id - The author of the book.
          */
         var DrawerListViewModel = function(places) {
+
+            //
             var _this = this;
+
+            //
             this.template = ko.observable();
+
+            //
             this.id = ko.observable();
+
+            //
             this.name = ko.observable();
+
+
 
             /**
              * 
@@ -23,19 +37,48 @@ define([
             this.name.subscribe(function() {
                 _this.nameRequestVisible(false);
             });
+
+            //
             this.searchResults = ko.observableArray([]);
+
+            //
             this.selectedPlace = ko.observable({});
+
+            //
             this.selectedFormattedAddress = ko.observable('');
+
+            //
             this.searchInput = ko.observable('');
+
+            //
             this.filterInput = ko.observable('');
+
+            //
             this.addressSearchVisible = ko.observable(false);
+
+            //
             this.filterVisible = ko.observable(false);
+
+            //
             this.searchInputVisible = ko.observable(true);
+
+            //
             this.selectedPlaceDisplayVisible = ko.observable(false);
+
+            //
             this.addButtonVisible = ko.observable(false);
+
+            //
             this.nameRequestVisible = ko.observable(false);
+
+            //
             this.places = ko.observableArray(places);
 
+
+
+            /**
+             * 
+             */
             this.filteredPlaces = ko.computed(function() {
                 if (_this.filterInput().length > 0) {
                     _this.map.hideAllMarkers();
@@ -57,8 +100,17 @@ define([
                 }
             }).extend({ throttle: 500 });
 
+
+
+
+            //
             this.expanded = ko.observable(false);
+
+            //
             this.expandedClass = ko.observable('');
+
+
+
 
             /**
              * 
@@ -72,6 +124,12 @@ define([
                 _this.expanded(!_this.expanded());
             };
 
+
+
+
+            /**
+             * @param {} place - The title of the book.
+             */
             this.onClick = function(place) {
 
                 if (!_this.map.mapViewModel.showMap()) {
@@ -80,6 +138,9 @@ define([
                 _this.centerLocation(place);
                 _this.toggleDrawerList();
             };
+
+
+
 
             /**
              * @param {} place - The title of the book.
@@ -94,6 +155,8 @@ define([
             };
 
 
+
+
             /**
              * 
              * @param {string} value - 
@@ -103,6 +166,10 @@ define([
             };
 
 
+
+            /**
+             * 
+             */
             this.clickAdd = function() {
                 if (_this.name()) {
                     _this.nameRequestVisible(false);
@@ -118,9 +185,10 @@ define([
             };
 
 
+
+
             /**
-             * @param {function} func - The title of the book.
-             * @param {string} id - The author of the book.
+             * @param {object} place - The title of the book.
              */
             this.addPlace = function(place) {
                 console.log(place);
@@ -131,6 +199,8 @@ define([
             };
 
 
+
+
             /**
              * @param {function} func - The title of the book.
              */
@@ -138,6 +208,8 @@ define([
                 _this.map.addMarker(place);
                 _this.places.push(place);
             };
+
+
 
 
             /**
@@ -157,6 +229,8 @@ define([
             };
 
 
+
+
             /**
              * 
              */
@@ -167,12 +241,17 @@ define([
             };
 
 
+
+
             /**
              * 
              */
             this.toggleSearchInput = function() {
                 _this.searchInputVisible(!_this.searchInputVisible());
             };
+
+
+
 
             /**
              * A function to show/hide the filter function view elements upon button click.
@@ -184,6 +263,8 @@ define([
             };
 
 
+
+
             /**
              * 
              */
@@ -192,12 +273,16 @@ define([
             };
 
 
+
+
             /**
              * 
              */
             this.toggleAddButton = function() {
                 _this.addButtonVisible(!_this.addButtonVisible());
             };
+
+
 
 
             /**
@@ -214,6 +299,8 @@ define([
             };
 
 
+
+
             /**
              * 
              */
@@ -223,6 +310,8 @@ define([
                 _this.toggleSelectedPlace();
                 _this.toggleAddButton();
             };
+
+
 
 
             /**

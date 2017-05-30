@@ -1,7 +1,8 @@
 /**
  * Using Require.js to define a module responsible for creating a Cache object and defining the modules that are required by this module.
  */
-define([
+define(
+    [
         'jquery'
     ],
     function(
@@ -34,8 +35,7 @@ define([
              * @param {string} stamp - a unique stamp(request Id) created by combining a place id and the view variable(view type).
              * @param {number} life - time in MS till the data will be considered stale(expired).
              * 
-             * NOTE: The param passed to result can be either an object or an array.
-             * @param {object} result - the object data returned from the HTTP request.
+             * NOTE: The param passed to result must be an array.
              * @param {array} result -  the array data returned from the HTTP request.
              */
             var Data = function(stamp, life, result) {
@@ -58,7 +58,11 @@ define([
                  * @return - returns true if the data is stale(expired), false if it is not stale(fresh).
                  */
                 this.isStale = function() {
+
+                    // Capturing current moment
                     var currentTime = new Date().getTime();
+
+                    // Determining if data has exceeded it's life span.
                     return currentTime > this.timeStamp + this.life ? true : false;
                 };
             };
@@ -71,11 +75,11 @@ define([
              * @param {string} stamp - a unique stamp(request Id) created by combining a place id and the view variable(view type).
              * @param {number} life - time in MS till the data will be considered stale(expired).
              * 
-             * NOTE: The param passed to result can be either an object or an array.
-             * @param {object} result - the object data returned from the HTTP request.
+             * NOTE: The param passed to result must be an array.
              * @param {array} result -  the array data returned from the HTTP request.
              */
             this.storeResult = function(stamp, life, result) {
+
                 // Creating a new Data object to store.
                 var data = new Data(stamp, life, result);
 
@@ -95,6 +99,8 @@ define([
              * @return - returns true if the stamp exist in the array, false if it does not.
              */
             this.has = function(stamp) {
+
+                // Determining if the array contains the value passed in @stamp
                 return _this.requestArray.indexOf(stamp) !== -1 ? true : false;
             };
 
