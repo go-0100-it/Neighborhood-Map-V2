@@ -17,7 +17,7 @@ define(
          */
         var DrawerListViewModel = function(places) {
 
-            //
+            // Getting a reference to this execution context for later reference.
             var _this = this;
 
             //

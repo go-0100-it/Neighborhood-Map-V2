@@ -27,6 +27,8 @@ define([
          * @return - returns the DataController constructor.
          */
         var DataController = function() {
+
+            // Getting a reference to this execution context for later reference.
             var _this = this;
             let DONE = 4;
             let OK = 200;

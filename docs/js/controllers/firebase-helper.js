@@ -16,6 +16,8 @@ define(['jquery',
          * @return - returns a new UserAuth object.
          */
         var UserAuth = function() {
+
+            // Getting a reference to this execution context for later reference.
             var _this = this;
             this.uid = '';
             this.initialized = false;

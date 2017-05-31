@@ -30,6 +30,8 @@ define([
          * @return {object} - returns a new main controller object.
          */
         var Main = function() {
+
+            // Getting a reference to this execution context for later reference.
             var _this = this;
             let VISIBLE = true;
             let HIDDEN = false;

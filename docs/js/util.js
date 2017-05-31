@@ -18,11 +18,15 @@ define(
             // This implementation should be changed in a production environment. All the template files should be
             // concatenated in a single file.
             loadTemplates: function(names, callback) {
-                var that = this;
+
+                // Getting a reference to this execution context for later reference.
+                var _this = this;
+
+
                 var loadTemplate = function(index) {
                     var name = names[index];
                     $.get('templates/' + name + '.html', function(data) {
-                        that.templates[name] = data;
+                        _this.templates[name] = data;
                         index++;
                         if (index < names.length) {
                             loadTemplate(index);

@@ -12,7 +12,7 @@ define(
     ) {
         var WeatherListViewModel = function(place, data, isError, main) {
 
-            //
+            // Getting a reference to this execution context for later reference.
             var _this = this;
 
             //
