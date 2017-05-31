@@ -12,7 +12,6 @@ define(
 
         /**
          * @constructor - Creates a Cache object.
-         * 
          * This Cache controller object is responsible for managing the storage and retrieval of all data requested and received by HTTP requests.
          * Since this constructor returns a single instance of new cache object it should only be called from the data controller.  Theoretically, you could 
          * create multiple Cashe objects but each would be a separate instance and therefore have no relationship with one another.
@@ -31,10 +30,8 @@ define(
 
             /**
              * @constructor - Creates a Data object.
-             * 
              * @param {string} stamp - a unique stamp(request Id) created by combining a place id and the view variable(view type).
              * @param {number} life - time in MS till the data will be considered stale(expired).
-             * 
              * NOTE: The param passed to result must be an array.
              * @param {array} result -  the array data returned from the HTTP request.
              */
@@ -74,7 +71,6 @@ define(
              * A function to call the Data constructorn to create a Data object and store the data object in the Cache storage array.
              * @param {string} stamp - a unique stamp(request Id) created by combining a place id and the view variable(view type).
              * @param {number} life - time in MS till the data will be considered stale(expired).
-             * 
              * NOTE: The param passed to result must be an array.
              * @param {array} result -  the array data returned from the HTTP request.
              */

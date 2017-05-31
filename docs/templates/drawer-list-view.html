@@ -3,24 +3,42 @@
     <div class="drawer-menu" id="drawer-menu" data-bind="css: expandedClass">
         <h2 class="drawer-menu-header">Places</h2>
         <div class="drawer-button-bar">
+
+            <!-- The button bar containing the FILTER button and the NEW button -->
             <button class="drawer-button-bar-button" data-bind="click: toggleFilter">Filter</button><button class="drawer-button-bar-button" data-bind="click: toggleAddressSearch">New</button>
+
+            <!-- the new place section -->
             <div data-bind="visible: addressSearchVisible">
+
+                <!-- place name input -->
                 <input class="place-name-input" data-bind="value: name, valueUpdate: 'keyup'" placeholder='Give your new place a name...' />
                 <div class="selected-place-display warning" data-bind="visible: nameRequestVisible"><span>Please give your new place a name.</span></div>
+
+                <!-- selected search result item -->
                 <div class="selected-place-display" data-bind="visible: selectedPlaceDisplayVisible"><span data-bind="text: selectedFormattedAddress"></span></div>
+
+                <!-- search input -->
                 <input class="address-input" type="search" data-bind="value: searchInput, valueUpdate: 'keyup', visible: searchInputVisible" autocomplete="off" placeholder="Search address" />
+
+                <!-- search results -->
                 <ul class="drawer-menu-list" data-bind="foreach: { data: searchResults, as: 'result' }">
                     <li class="drawer-list-item search-results">
                         <span class="li-name search-results" data-bind="text: result.formatted_address, click: $parent.onSelectAddress"></span>
                     </li>
                 </ul>
             </div>
+
+            <!-- The filter section -->
             <div data-bind="visible: filterVisible">
+
+                <!-- Filter input -->
                 <input class="filter-by-input" type="text" data-bind="value: filterInput, valueUpdate: 'keyup'" placeholder="Filter names by..." />
             </div>
             <hr/>
             <button class="drawer-button-bar-button" data-bind="click: resetSearchView, visible: addButtonVisible">CANCEL</button><button class="drawer-button-bar-button" data-bind="click: clickAdd, visible: addButtonVisible">ADD</button>
         </div>
+
+        <!-- Places list -->
         <div class="list-container">
             <ul class="drawer-menu-list" data-bind="foreach: { data: filteredPlaces, as: 'place' }">
                 <li class="drawer-list-item">
@@ -30,5 +48,7 @@
             </ul>
         </div>
     </div>
+
+    <!-- Drawer toggle button -->
     <div for="drawer-menu-check" class="drawer-toggler" data-bind="click: toggleDrawerList, css: expandedClass"><span class="drawer-menu-span">≡</span></div>
 </div>
