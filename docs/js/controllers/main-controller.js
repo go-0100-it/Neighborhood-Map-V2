@@ -24,7 +24,7 @@ define([
         /**
          * @constructor - Creates a main controller object.
          * The created main controller object is, as the name implies, the main controller.  It controls the majority of the functions of the application.  
-         * Nearly every function of the application is controlled via this main controller object.  The purpose of the main controller is to be 
+         * Nearly every function of the application is controlled or delegated via this main controller object.  The purpose of the main controller is to be 
          * the hub in which all other modules can communicate through and in which all of the main functionality of the application is generated.  Having this 
          * main controller helps to keep concerns seperate and helps keep code modulal and improve maintainability.  
          * @return {object} - returns a new main controller object.
@@ -36,58 +36,64 @@ define([
             let VISIBLE = true;
             let HIDDEN = false;
 
-            /** */
+            // Creating a new Data controller object.
             _this.dataController = new DataController();
 
 
 
             /**
-             * 
-             * @param {object} place - 
+             * A function to create, if not yet created, a new DrawerListViewModel, fetch the Drawer list data and render the Drawer List View html
+             * template and returned Drawer list data to the UI.
+             * @param {object} place - the place object to derive the location from to pass to the map view (to center the map on the place coordinates).
              */
             this.renderDrawerListView = function(place) {
 
-                //
+                // if a place has been passed in set the loc value to the places coordinates.
                 var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
 
-                //
+                // if the drawerListViewModel has not been created previously.
                 if (!_this.drawerListViewModel) {
 
-                    //
+                    // Create a new DrawerListViewModel.
                     _this.drawerListViewModel = new DrawerListViewModel();
-
-                    //
+                    
+                    // Apply the KO bindings between the newly created view model and the existing view container.
                     ko.applyBindings(_this.drawerListViewModel, $('#nav')[0]);
 
-                    //
+                    // Add the drawer list view html template(view) to the view model which will render in the UI.
                     _this.drawerListViewModel.template(tpl.get('drawer-list-view'));
 
-                    //
+                    // remove the bindings from the container, so we can add bindings to the added template later.
                     ko.cleanNode($('#nav')[0]);
 
-                    var locationRequest = {};
+                    // Creating the LocationRequest object.
+                    var LocationRequest = {};
 
-                    _this.renderMap(place);
+                    // Calling the renderMap function to render the map if it has not already been rendered or make it visible if it 
+                    // has already been rendered.
+                    _this.renderMap(loc);
 
-                    //
+                    // if a loc has been set then create a locationRequest object to pass to the initAuth function to be calledback once the data
+                    // has request has been returned, which will then center the map on the location.
                     if (loc) {
-                        var isRequested = true;
-                        locationRequest = { centerOnLocation: _this.map.centerOnLocation, centerRequested: isRequested, locRequested: loc };
+                        // creating a object literal with the necessary data and function to center the map on the location at a later time.
+                        LocationRequest = { centerOnLocation: _this.map.centerOnLocation, centerRequested: true, locRequested: loc };
                     }
 
-                    //
-                    FBHelper.initAuth(_this.dataController.getUserPlaces, _this.drawerListViewModel.pushPlace, locationRequest);
+                    // Calling the initAuth function to log the user in to the firebase database Anonymously.  Passing in the callbacks to be called 
+                    // once the user has been logged in.
+                    FBHelper.initAuth(_this.dataController.getUserPlaces, _this.drawerListViewModel.pushPlace, LocationRequest);
 
 
 
 
                     /**
-                     * 
-                     * @param {object} place - 
+                     * A function to delegate the adding of a new place object to the dataController.
+                     * @param {object} place - the new place object to add to firebase
                      */
                     _this.drawerListViewModel.updatePlacesData = function(place) {
 
-                        //
+                        // calling the dataControllers updateUserPlaces function to update the firebase database with the new place object.
                         _this.dataController.updateUserPlaces(place, FBHelper.uid);
                     };
 
@@ -95,21 +101,24 @@ define([
 
 
                     /**
-                     * 
-                     * @param {object} place - 
+                     * A function to delegate the removal of a place object to the dataController.
+                     * @param {object} place - the place object to remove from the firebase database.
                      */
                     _this.drawerListViewModel.removePlaceData = function(place) {
 
-                        //
+                        // calling the dataControllers removeUserPlace function to remove the place object from the firebase database.
                         _this.dataController.removeUserPlace(place, FBHelper.uid);
                     };
 
+                    // applying KO bindings to the drawerListViewModel and the drawer view.
                     ko.applyBindings(_this.drawerListViewModel, $('#drawer-menu-container')[0]);
-                    //
+
+                    // if the drawerListViewModel has already been rendered.
                 } else {
 
-                    //
-                    _this.renderMap(place);
+                    // render the map, this function will either create a new map if one has not already been created or show the map if
+                    // it is hidden.
+                    _this.renderMap(loc);
                 }
             };
 
@@ -117,17 +126,28 @@ define([
 
 
             /**
-             * 
-             * @param {object} loc - 
+             * A function to either show the already created map or create one if one is not already created and to hide the other views
+             * to allow for a full screen map.
+             * @param {object} place - the place object to center the map on once it is either shown or created.
              */
             this.renderMap = function(place) {
 
-                var loc = place ? { lat: Number(place.lat), lng: Number(place.lng) } : null;
+                // Calling the setTabsVisibility function to set the tabs views visibility to HIDDEN.
                 _this.setTabsVisibility(HIDDEN, true);
+
+                // // Calling the setErrorVisibility function to set the error views visibility to HIDDEN.
                 _this.setErrorVisibility(HIDDEN);
+                
+                // if the maps has aready been created then set the visibility to VISIBLE.
                 if (_this.map) {
+
+                    // Calling the setMapVisibility function to set the maps views visibility to VISIBLE.
                     _this.setMapVisibility(VISIBLE, loc);
+
+                    // create a new map if one has not been created.
                 } else {
+
+                    // Calling the createMap function to create a new Map.
                     _this.createMap(loc);
                 }
             };
@@ -137,19 +157,32 @@ define([
 
             /**
              * 
-             * @param {object} place - The author of the book.
+             * @param {object} loc - The author of the book.
              */
             this.createMap = function(loc) {
+
+                //
                 _this.map = new Map();
+
+                //
                 _this.map.init();
+
+                //
                 _this.drawerListViewModel.map = _this.map;
+
                 //
                 if (navigator.geolocation) {
+
+                    //
                     navigator.geolocation.getCurrentPosition(function(position) {
+
+                        //
                         var defaultLoc = loc ? loc : {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
                         };
+
+                        //
                         _this.map.centerOnLocation(defaultLoc);
                     });
                 }
@@ -164,15 +197,32 @@ define([
              */
             this.renderTabsView = function(place, view) {
 
+                //
                 _this.renderDrawerListView(place);
+
+                //
                 _this.setMapVisibility(HIDDEN);
+
+                //
                 _this.setErrorVisibility(HIDDEN);
+
+                //
                 if (_this.tabsViewModel) {
+
+                    //
                     _this.setTabsVisibility(VISIBLE, null, place);
+
+                    //
                 } else {
+
+                    //
                     _this.createTabsView(place);
                 }
+
+                //
                 _this.renderSpinner();
+
+                //
                 _this.renderTabView(place, view);
             };
 
@@ -213,6 +263,8 @@ define([
              * @param {string} view - the type of view needed to display the requested data.
              */
             this.renderTabView = function(place, view) {
+
+                // requiring the view model modules and css required for the views.
                 requirejs(
                     [
                         'css!css/weather-view.css',
@@ -228,6 +280,7 @@ define([
                         WeatherListViewModel,
                         RestaurantsListViewModel
                     ) {
+
                         //
                         switch (view) {
                             case 'events':
@@ -343,6 +396,7 @@ define([
              */
             this.renderSpinner = function() {
 
+                // requiring the view model module required for the view.
                 requirejs(
                     [
                         'spinner_view_model'
@@ -461,6 +515,7 @@ define([
              */
             this.createErrorView = function() {
 
+                // requiring the view model module and css required for the view.
                 requirejs(
                     [
                         'error404_view_model',
@@ -469,20 +524,24 @@ define([
                     function(
                         ErrorViewModel
                     ) {
-                        //
+                        // creating the errorViewModel to render the error html template.
                         _this.errorViewModel = new ErrorViewModel();
 
+                        // applyiung the bindings to the view model and the dom element.
                         ko.applyBindings(_this.errorViewModel, $('#error-container-view')[0]);
 
+                        // updating the viewModel template to render the html.
                         _this.errorViewModel.template(tpl.get('error404-view'));
 
+                        // removing the bindings from the container view.
                         ko.cleanNode($('#error-container-view')[0]);
 
+                        // applying new bindings to the view models newly updated html template.
                         ko.applyBindings(_this.errorViewModel, $('#error-view')[0]);
                     });
             };
         };
 
-        //
+        // retruning a new Main object.
         return new Main();
     });
