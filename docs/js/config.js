@@ -83,6 +83,7 @@ requirejs(
                         'css!css/drawer-menu.css'
                     ],
                     function() {
+
                         // Initialize Firebase
                         var configFB = {
                             apiKey: "AIzaSyAlFaHJIu2go9re03lp6AaunDBfuI9GkCk",

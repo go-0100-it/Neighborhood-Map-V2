@@ -1,5 +1,6 @@
 /**
- * Using Require.js to define a module responsible for creating a Map object.
+ * Using Require.js to define a module responsible for creating a Map object.  This map object is responsible for creating, rendering and
+ * handling all user interactions with a Google map.
  */
 define([
         'jquery',
@@ -65,7 +66,7 @@ define([
                     _this.map = new google.maps.Map(document.getElementById('map'), {
                         zoom: 8
                     });
-                    
+
                 } else {
 
                     // If google or google.maps has not been loaded alert the user.
@@ -283,7 +284,7 @@ define([
                         _this.closeInfoWindow(map);
                         _this.openInfoWindow(infowindow, marker, map);
 
-                    // if the marker passed in is the currenly open marker then close the info window passed in.
+                        // if the marker passed in is the currenly open marker then close the info window passed in.
                     } else {
                         _this.closeInfoWindow(map);
                     }
@@ -295,12 +296,18 @@ define([
 
 
             /**
-             * 
-             * @param {number} index - 
+             * A function used to remove a marker and the associated info window from the map.
+             * @param {number} index - the index of the marker and info window to be removed. 
              */
             this.removeMarker = function(index) {
+
+                // removing the marker from the map
                 _this.markers[index].setMap(null);
+
+                // removing the info window from the array of info windows
                 _this.infoWindows.splice(index, 1);
+
+                // removing the marker from the array of map markers
                 _this.markers.splice(index, 1);
             };
 
@@ -308,11 +315,15 @@ define([
 
 
             /**
-             * 
-             * @param {number} index - 
+             * A function to remove all markers from the map.
+             * Using this function to clear the map of all markers when filtering.
              */
             this.hideAllMarkers = function() {
+
+                // looping through the array of markers and removing each from the marker.
                 $.each(_this.markers, function(index, marker) {
+
+                    // removing the marker form the map.
                     marker.setMap(null);
                 });
 
@@ -321,6 +332,10 @@ define([
 
 
 
+            /**
+             * A function add back to the map an individual previously hidden marker.
+             * @param {number} index - the index of the marker to add back to the marker.
+             */
             this.showMarker = function(index) {
                 var marker = _this.markers[index];
                 marker.setMap(_this.map);
@@ -330,21 +345,24 @@ define([
 
 
             /**
-             * 
-             * @param {number} index - 
+             * A function to show all the markers.  Using this function to re-show all the markers after filtering, when no filter is applied. 
              */
             this.showAllMarkers = function() {
+
+                // looping through the array of markers and adding each back to the map.
                 $.each(_this.markers, function(index, marker) {
+
+                    // Adding marker to the map.
                     marker.setMap(_this.map);
-                })
+                });
             };
 
 
 
 
             /**
-             * 
-             * @param {object} loc - 
+             * A function to center the map on a particular coordinates.
+             * @param {object} loc - the coordinates to center the map on.
              */
             this.centerOnLocation = function(loc) {
                 _this.map.panTo(loc);
@@ -354,32 +372,32 @@ define([
 
 
             /**
-             * 
-             * @param {string} value - 
-             * @param {object} searchResults - 
+             * A function to search google geocoder for locations via addresses.  
+             * @param {string} value - the value to pass to google geocoder to search for matching addresses.
+             * @param {object} searchResults - the KO observable array used to store the results returned from google geocoder and update the view.
              */
             this.searchAddress = function(value, searchResults) {
 
-                //
+                // Confirming that google and google maps has been loaded and that this code is not still processing another request.
                 if (typeof google === 'object' && typeof google.maps === 'object' && !_this.searching) {
 
-                    //
+                    // Setting the searching flag to true to ensure this request has completed before processing another request.
                     _this.searching = true;
 
-                    //
+                    // Creating a Geocoder object to handle the request.
                     var geocoder = new google.maps.Geocoder();
 
-                    //
+                    // Calling the geocoders geocode function the value to search for and the callback function to be called when a result has been returned.
                     geocoder.geocode({ 'address': value }, function(results, status) {
 
-                        //
+                        // Clearing the observable array, this also triggers KO to clear the view.
                         searchResults([]);
 
-                        //
+                        // Ensuring a value is returned from the geocoder.
                         if (status == 'OK' && value !== '' && value !== ' ') {
                             var i = 0;
 
-                            //
+                            // looping the results and adding up to 5 to the searchResults observable.  This limits the results displayed to 5. 
                             results.forEach(function(result) {
                                 if (i < 5) {
                                     searchResults.push(result);
@@ -387,17 +405,29 @@ define([
                                 i += 1;
                             });
 
-                            //
+                            // if no value is returned from the geocoder.
                         } else {
+
+                            // log the lack of results to the console.
                             console.log('Geocode was not successful. Status Code: ' + status);
+
+                            // clear the observable array of the previous values returned, this also clears the display.
                             searchResults([]);
                         }
                     });
+
+                    // if google or google maps has not been loaded.
                 } else {
+
+                    // log the status to the console.
                     console.log("Google's Geocoder API is currently unavailable.");
                 }
+
+                // this search process is complete so set the searching flag to false to now allow additional searches.
                 _this.searching = false;
             };
         };
+
+        // return the map constructor
         return Map;
     });
