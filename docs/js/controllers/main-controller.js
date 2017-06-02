@@ -156,33 +156,34 @@ define([
 
 
             /**
-             * 
-             * @param {object} loc - The author of the book.
+             * A function to create a new Map object and store reference to this new Map object in this MainController module and the drawerListViewModel
+             * module.
+             * @param {object} loc - .
              */
             this.createMap = function(loc) {
 
-                //
+                // creating a new Map object
                 _this.map = new Map();
 
-                //
+                // initializing the new Map.
                 _this.map.init();
 
-                //
+                // giving reference to the map object to the drawerListViewModel.
                 _this.drawerListViewModel.map = _this.map;
 
-                //
+                // Checking if the users browser has geolocation.
                 if (navigator.geolocation) {
 
-                    //
+                    // getting users current location via geolocation.
                     navigator.geolocation.getCurrentPosition(function(position) {
 
-                        //
+                        // creating a default location object, if a loc value exists use that else use the users location coordinates.
                         var defaultLoc = loc ? loc : {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
                         };
 
-                        //
+                        // calling the maps centerOnLocation function to center the map 
                         _this.map.centerOnLocation(defaultLoc);
                     });
                 }
@@ -192,37 +193,39 @@ define([
 
 
             /**
-             * @param {object} place - 
-             * @param {object} view - 
+             * A function to create a new tabs view if one was not already created or show the previously created but hidden tabs view then
+             * render the tab view.
+             * @param {object} place - the place object to render in the tabs view.
+             * @param {object} view - the type of tab view requested to be rendered for the tabs view.  
              */
             this.renderTabsView = function(place, view) {
 
-                //
+                // calling the renderDrawerListView to render the drawer and map if it has not already been rendered.
                 _this.renderDrawerListView(place);
 
-                //
+                // hide the map view if it is visible.
                 _this.setMapVisibility(HIDDEN);
 
-                //
+                // hide the error view if it is visible.
                 _this.setErrorVisibility(HIDDEN);
 
-                //
+                // if the tabsViewModel exists.
                 if (_this.tabsViewModel) {
 
-                    //
+                    // show the tabs view and update the place to display.
                     _this.setTabsVisibility(VISIBLE, null, place);
 
-                    //
+                    // if the tabsViewModel does not exist
                 } else {
 
-                    //
+                    // create the tabs view.
                     _this.createTabsView(place);
                 }
 
-                //
+                // render the spinner to show while we wait for the data request response.
                 _this.renderSpinner();
 
-                //
+                // calling the renderTabView function to render the requested tab, will also fetch the corresponding data.
                 _this.renderTabView(place, view);
             };
 
@@ -230,6 +233,7 @@ define([
 
 
             /**
+             * 
              * @param {object} place -  
              */
             this.createTabsView = function(place) {
@@ -245,12 +249,16 @@ define([
                         //
                         _this.tabsViewModel = new TabsViewModel(place);
 
+                        //
                         ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
 
+                        //
                         _this.tabsViewModel.template(tpl.get('tabs-view'));
 
+                        //
                         ko.cleanNode($('#tabs-container-view')[0]);
 
+                        //
                         ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
                     });
             };
@@ -281,7 +289,6 @@ define([
                         RestaurantsListViewModel
                     ) {
 
-                        //
                         switch (view) {
                             case 'events':
 
@@ -392,7 +399,6 @@ define([
 
             /**
              * 
-             * 
              */
             this.renderSpinner = function() {
 
@@ -405,6 +411,7 @@ define([
                         SpinnerViewModel
                     ) {
 
+                        // Creating an object literal containing the necessary data used to render the view.
                         viewConfigData = {
                             viewVariable: 'spinnerView',
                             viewModelVariable: 'spinnerViewModel',
@@ -427,8 +434,14 @@ define([
              * 
              */
             this.removeCurrentTab = function() {
+
+                //
                 if (_this.currentTab) {
+
+                    //
                     ko.removeNode(_this.currentTab.tab);
+
+                    //
                     _this.currentTab = null;
                 }
             };
@@ -442,9 +455,17 @@ define([
              * @param {object} loc - 
              */
             this.setMapVisibility = function(state, loc) {
+
+                //
                 if (_this.map.mapViewModel) {
+
+                    //
                     _this.map.mapViewModel.showMap(state);
+
+                    //
                     if (loc) {
+
+                        //
                         _this.map.refreshMap(loc);
                     }
                 }
@@ -492,16 +513,29 @@ define([
 
 
             /**
-             * 
-             * 
+             * A function to create an error view if one does not already exist or show the previously created hidden view.
              */
             this.renderErrorView = function() {
+
+                //
                 _this.renderDrawerListView();
+
+                //
                 _this.setMapVisibility(HIDDEN);
+
+                //
                 _this.setTabsVisibility(HIDDEN, null, true);
+
+                //
                 if (_this.errorViewModel) {
+
+                    //
                     _this.setErrorVisibility(VISIBLE);
-                } else {
+
+                //
+            } else {
+                
+                    //
                     _this.createErrorView();
                 }
             };
@@ -510,8 +544,8 @@ define([
 
 
             /**
-             * 
-             * 
+             * A function to create an errorViewModel and render the error html template.  This error view is displayed when
+             * the requested URL is not found.
              */
             this.createErrorView = function() {
 
