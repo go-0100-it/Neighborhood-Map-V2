@@ -1,5 +1,5 @@
 /**
- * Using Require.js to define a module responsible for...
+ * Using Require.js to define a module responsible for creating a main controller object.
  */
 define([
         'jquery',
@@ -56,7 +56,7 @@ define([
 
                     // Create a new DrawerListViewModel.
                     _this.drawerListViewModel = new DrawerListViewModel();
-                    
+
                     // Apply the KO bindings between the newly created view model and the existing view container.
                     ko.applyBindings(_this.drawerListViewModel, $('#nav')[0]);
 
@@ -137,7 +137,7 @@ define([
 
                 // // Calling the setErrorVisibility function to set the error views visibility to HIDDEN.
                 _this.setErrorVisibility(HIDDEN);
-                
+
                 // if the maps has aready been created then set the visibility to VISIBLE.
                 if (_this.map) {
 
@@ -158,7 +158,7 @@ define([
             /**
              * A function to create a new Map object and store reference to this new Map object in this MainController module and the drawerListViewModel
              * module.
-             * @param {object} loc - .
+             * @param {object} loc - an object containing the location coordinates to center the map.
              */
             this.createMap = function(loc) {
 
@@ -233,11 +233,12 @@ define([
 
 
             /**
-             * 
-             * @param {object} place -  
+             * A function to create the tabs view and apply KO bindings between the view and view model.
+             * @param {object} place - the place object to render in the tabs view.
              */
             this.createTabsView = function(place) {
 
+                // requiring the view model module and the css for the view
                 requirejs(
                     [
                         'tabs_view_model',
@@ -246,19 +247,19 @@ define([
                     function(
                         TabsViewModel
                     ) {
-                        //
+                        // creating the tabs view model
                         _this.tabsViewModel = new TabsViewModel(place);
 
-                        //
+                        // initially applying the bindings to the empty container so the template can be rendered.
                         ko.applyBindings(_this.tabsViewModel, $('#tabs-container-view')[0]);
 
-                        //
+                        // rendering the html template for the tabs view.
                         _this.tabsViewModel.template(tpl.get('tabs-view'));
 
-                        //
+                        // removing the bindings from the container because we need to apply the bindings to the newly rendered html template.
                         ko.cleanNode($('#tabs-container-view')[0]);
 
-                        //
+                        // applying the bindings to the new view
                         ko.applyBindings(_this.tabsViewModel, $('#tabs-view')[0]);
                     });
             };
@@ -347,6 +348,7 @@ define([
                                     place: place
                                 };
 
+                                // setting the tabsViewModel title to display the correct title.
                                 _this.tabsViewModel.title('Local Restaurants');
 
                                 // Calling the queryCache function to first check if the requested data has been cached, passing in 2 functions,
@@ -398,7 +400,8 @@ define([
 
 
             /**
-             * 
+             * A function to render the spinner view.  This view is rendered to the UI and displayed while the data request is being processed and
+             * will be removed once the request response is processed.
              */
             this.renderSpinner = function() {
 
@@ -421,7 +424,7 @@ define([
                             place: null
                         };
 
-                        //
+                        // calling the common renderView function to render the view.
                         _this.renderView(null, viewConfigData, false);
                     });
             };
@@ -430,18 +433,18 @@ define([
 
 
             /**
-             * 
-             * 
+             * a function to remove the previously rendered tab.  This function is called prior to rendering a new tab. This is necessary to avoid massive
+             * memory leaks.
              */
             this.removeCurrentTab = function() {
 
-                //
+                // if a tab exists
                 if (_this.currentTab) {
 
-                    //
+                    // remove the existing tab
                     ko.removeNode(_this.currentTab.tab);
 
-                    //
+                    // there is no longer an existing tab so set the currentTab variable to null
                     _this.currentTab = null;
                 }
             };
@@ -450,22 +453,24 @@ define([
 
 
             /**
-             * 
+             * A function to set the Visibility of the map.  Can be hidden by passing the boolean value HIDDEN(false) as the state parameter or 
+             * visible by passing the value VISIBLE(true) as the state parameter.
              * @param {boolean} state - the boolean value indicating the visibility state requested.  True for visible, false for hidden.
-             * @param {object} loc - 
+             * @param {object} loc - when setting the map to VISIBLE it is necessary to refresh the map and the location object is needed when centering the map
+             * which is called when refreshing. 
              */
             this.setMapVisibility = function(state, loc) {
 
-                //
+                // if a map object exists
                 if (_this.map.mapViewModel) {
 
-                    //
+                    // then call the showMap function passing the required state.
                     _this.map.mapViewModel.showMap(state);
 
-                    //
+                    // if a loc object was passed.
                     if (loc) {
 
-                        //
+                        // then call the refreshMap function to refresh and recenter the map.
                         _this.map.refreshMap(loc);
                     }
                 }
@@ -475,19 +480,32 @@ define([
 
 
             /**
-             * 
+             * A function to set the Visibility of the tabs view.  Can be hidden by passing the boolean value HIDDEN(false) as the state parameter or 
+             * visible by passing the value VISIBLE(true) as the state parameter.
              * @param {boolean} state - the boolean value indicating the visibility state requested.  True for visible, false for hidden.
-             * @param {boolean} remove - 
-             * @param {object} place - 
+             * @param {boolean} remove - the boolean value indicating if the tab view is to be removed, passing true will remove the current tab false will not.
+             * @param {object} place - the place object to render in the tabs view.
              */
             this.setTabsVisibility = function(state, remove, place) {
+
+                // if a tabs view exists
                 if (_this.tabsViewModel) {
+
+                    // if a place object was pass in
                     if (place) {
+
+                        // update the tabsViewModel place object to render to the view.
                         _this.tabsViewModel.place(place);
                     }
+
+                    // if the remove value is true
                     if (remove) {
+
+                        // remove the current tab
                         _this.removeCurrentTab();
                     }
+
+                    // call the showTabs function passing the requested state.
                     _this.tabsViewModel.showTabs(state);
                 }
             };
@@ -496,7 +514,7 @@ define([
 
 
             /**
-             * A common function to set the visibility of the errorViewModel's data-bound element.
+             * A function to set the visibility of the errorViewModel's data-bound element.
              * @param {boolean} state - the boolean value indicating the visibility state requested.  True for visible, false for hidden.
              */
             this.setErrorVisibility = function(state) {
@@ -517,25 +535,25 @@ define([
              */
             this.renderErrorView = function() {
 
-                //
+                // calling render the drawer list view, this renders the drawer list view and the map ifb they don't already exist.
                 _this.renderDrawerListView();
 
-                //
+                // hiding the map view
                 _this.setMapVisibility(HIDDEN);
 
-                //
+                // hiding the tabs view
                 _this.setTabsVisibility(HIDDEN, null, true);
 
-                //
+                // if the error view exists
                 if (_this.errorViewModel) {
 
-                    //
+                    // show the existing error view
                     _this.setErrorVisibility(VISIBLE);
 
-                //
-            } else {
-                
-                    //
+                    // if the error view does not exist
+                } else {
+
+                    // create the error view
                     _this.createErrorView();
                 }
             };
