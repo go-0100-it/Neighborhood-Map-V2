@@ -130,7 +130,7 @@ define(
                         _this.map.showAllMarkers();
                     }
 
-                    // return all places
+                    // return the array of place objects
                     return _this.places();
                 }
 
@@ -343,11 +343,17 @@ define(
 
 
             /**
-             * 
+             * A function to show or hide the address search elements
              */
             this.toggleAddressSearch = function() {
+
+                // clear the filter input, only necessary if user was filtering prior to adding a new place
                 _this.filterInput('');
+
+                // hide the filter elements, only necessary if user was filtering prior to adding a new place
                 _this.filterVisible(false);
+
+                // negates the state (shows or hides depending on the previous state)
                 _this.addressSearchVisible(!_this.addressSearchVisible());
             };
 
@@ -355,9 +361,11 @@ define(
 
 
             /**
-             * 
+             * A function to show or hide the search input element independantly
              */
             this.toggleSearchInput = function() {
+
+                // negates the state (shows or hides depending on the previous state)
                 _this.searchInputVisible(!_this.searchInputVisible());
             };
 
@@ -365,11 +373,17 @@ define(
 
 
             /**
-             * A function to show/hide the filter function view elements upon button click.
+             * A function to show/hide the filter elements upon button click.
              */
             this.toggleFilter = function() {
+
+                // hide the address search elements, this is only necessary if the user was previously adding a new place.
                 _this.addressSearchVisible(false);
+
+                // clearing the filter input, this is only necessary if this is closing the filter.
                 _this.filterInput('');
+
+                // negates the state (shows or hides depending on the previous state)
                 _this.filterVisible(!_this.filterVisible());
             };
 
@@ -377,9 +391,11 @@ define(
 
 
             /**
-             * 
+             * A function to show or hide the selected place display element independantly
              */
             this.toggleSelectedPlace = function() {
+
+                // negates the state (shows or hides depending on the previous state)
                 _this.selectedPlaceDisplayVisible(!_this.selectedPlaceDisplayVisible());
             };
 
@@ -387,9 +403,11 @@ define(
 
 
             /**
-             * 
+             * A function to show or hide the add button independantly
              */
             this.toggleAddButton = function() {
+
+                // negates the state (shows or hides depending on the previous state)
                 _this.addButtonVisible(!_this.addButtonVisible());
             };
 
@@ -397,14 +415,25 @@ define(
 
 
             /**
-             * @param {object} place - 
-             * 
+             * A function to delegate to the map module the request to center the map on a given location
+             * @param {object} place - the location to center the map
              */
             this.centerLocation = function(place) {
+
+                // getting the index position of the place object in the places array to later get reference the places corresponding 
+                // info window.
                 var index = _this.places.indexOf(place);
+
+                // creating a location object from the place's coordinates
                 var loc = { lat: place.lat, lng: place.lng };
+
+                // calling the center on map function to center the map on the location
                 _this.map.centerOnLocation(loc);
+
+                // if the currently open window is not the places corresponding info window
                 if (_this.map.openWindow !== _this.map.infoWindows[index]) {
+
+                    // close the open window and open the places corresponding info window.
                     _this.map.toggleWindowsMarkers(_this.map.infoWindows[index], _this.map.markers[index], _this.map);
                 }
             };
@@ -413,12 +442,20 @@ define(
 
 
             /**
-             * 
+             * A function to hide the common elements of the search
              */
             this.resetSearchView = function() {
+
+                // hide the name request element
                 _this.nameRequestVisible(false);
+
+                // hide the search input element
                 _this.toggleSearchInput();
+
+                // hide the selected place display element
                 _this.toggleSelectedPlace();
+
+                // hide the add button
                 _this.toggleAddButton();
             };
 
@@ -426,14 +463,15 @@ define(
 
 
             /**
-             * 
+             * Subscribing to the change event of the searchInput observable, this will call the searchAddress function every time 
+             * the searchInput obsevable is updated.
              */
             this.searchInput.subscribe(this.searchAddress);
 
-            /** */
+            // returning this drawerListViewModel
             return this;
         };
 
-        /** */
+        // returning the DrawerListViewModel constructor
         return DrawerListViewModel;
     });

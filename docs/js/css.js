@@ -9,7 +9,6 @@
 var cssloaded = false;
 if (!cssloaded) {
     (function(win, cssloaded) {
-        console.log('ran again');
         cssloaded = true;
         var doc = win.document,
             docBody = doc.body,
