@@ -50,6 +50,14 @@ body {
     margin: 30vh auto;
 }
 
+.smooth {
+    transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+}
+
 @media only screen and (max-width: 600px) {
     .container-view {
         width: 100%;

@@ -134,7 +134,7 @@ define([
                     // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
                     // to the user.
                     _this.processError(err, { events: { event: [{ title: err.msg, image: null, start_time: '', venue_url: '', venue_address: '' }] } }, callId, args, func);
-                
+
                 }, 20000);
 
                 // Incrementing the dataRequestCount variable by 1 every time a request is made(this code is run).
@@ -304,7 +304,7 @@ define([
                         _this.callbackSync(restaurants, callId, args, func, false);
 
                         // If the response from server is an error, log the error
-                    } else if (this.status >= ERROR) {
+                    } else if (this.readyState == DONE && this.status > OK) {
 
                         // Creating an err object which will be used to log the error to the console.
                         var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
@@ -387,6 +387,9 @@ define([
                         // Parsing the response and setting to a variable for readability.
                         var jsonResponse = getRequest.response ? JSON.parse(getRequest.response) : null;
 
+                        console.log('Weather JSON Response:');
+                        console.dir(getRequest.response);
+
                         // Parsing the response and setting to a variable for readability.
                         currentWeather = jsonResponse ? JSON.parse(getRequest.response) : [{ name: 'No weather data found for this location', location: { address: '' } }];
 
@@ -401,12 +404,12 @@ define([
                         _this.callbackSync(currentWeather, callId, args, func, false);
 
                         // If the response from server is an error, log the error
-                    } else if (getRequest.status >= ERROR) {
+                    } else if (getRequest.readyState == DONE && getRequest.status > OK) {
                         var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
                         _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
                     }
                 };
-                
+
                 // Setting the timeout time value.  This is a small request and shouldn't take to long.
                 getRequest.timeout = 8000;
 

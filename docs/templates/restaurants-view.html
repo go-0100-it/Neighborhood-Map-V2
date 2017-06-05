@@ -17,7 +17,7 @@
                     <div data-bind="visible: restaurant.name !== 'No restaurants found for this location' && $parent.isErr !== true">
                         <span>Cuisine: </span><span data-bind="text: restaurant.cuisines"></span>
                         <h4 class="restaurant-address" data-bind="text: restaurant.location.address"></h4>
-                        <button class="tab-item-button" data-bind="click: $parent.addPlace">Save place</button>
+                        <button class="tab-item-button smooth" data-bind="click: $parent.addPlace">Save place</button>
                     </div>
             </li>
         </ul>

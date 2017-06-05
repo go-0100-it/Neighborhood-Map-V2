@@ -128,9 +128,9 @@ define([
             /**
              * A function to either show the already created map or create one if one is not already created and to hide the other views
              * to allow for a full screen map.
-             * @param {object} place - the place object to center the map on once it is either shown or created.
+             * @param {object} loc - the location object containing the place coordinates to center the map on once it is either shown or created.
              */
-            this.renderMap = function(place) {
+            this.renderMap = function(loc) {
 
                 // Calling the setTabsVisibility function to set the tabs views visibility to HIDDEN.
                 _this.setTabsVisibility(HIDDEN, true);

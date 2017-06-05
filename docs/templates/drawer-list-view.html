@@ -8,7 +8,7 @@
             <button class="drawer-button-bar-button" data-bind="click: toggleFilter">Filter</button><button class="drawer-button-bar-button" data-bind="click: toggleAddressSearch">New</button>
 
             <!-- the new place section -->
-            <div data-bind="visible: addressSearchVisible">
+            <div class="smooth" data-bind="visible: addressSearchVisible">
 
                 <!-- place name input -->
                 <input class="place-name-input" data-bind="value: name, valueUpdate: 'keyup'" placeholder='Give your new place a name...' />
@@ -41,7 +41,7 @@
         <!-- Places list -->
         <div class="list-container">
             <ul class="drawer-menu-list" data-bind="foreach: { data: filteredPlaces, as: 'place' }">
-                <li class="drawer-list-item">
+                <li class="drawer-list-item smooth">
                     <div class="remove-button" data-bind="click: $parent.removePlace"><span class="remove-icon">⊗</span><span class="remove-title">remove</span></div>
                     <div class="item-details" data-bind="click: $parent.onClick"><span class="li-name" data-bind="text: place.name"></span><span class="li-addr" data-bind="text: place.address"></span></div>
                 </li>
