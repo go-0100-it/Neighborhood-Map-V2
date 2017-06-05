@@ -12,9 +12,6 @@ define(
     ) {
         var RestaurantsListViewModel = function(place, data, isError, main) {
 
-            // Getting a reference to this execution context for later reference.
-            var _this = this;
-
             //
             this.template = ko.observable();
 
@@ -59,8 +56,6 @@ define(
                     address: place.restaurant.location.address,
                     id: place.restaurant.location.zipcode + place.restaurant.id
                 };
-                alert('Adding new place ');
-                console.dir(newPlace);
                 Main.drawerListViewModel.addPlace(newPlace);
             };
 

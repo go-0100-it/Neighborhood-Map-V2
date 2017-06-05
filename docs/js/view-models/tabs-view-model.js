@@ -87,7 +87,6 @@ define(
              * 
              */
             this.onClickWeatherTab = function() {
-                console.dir(_this.place());
                 _this.navigateTab(_this.tabsList[1]);
             };
 
@@ -98,7 +97,6 @@ define(
              * 
              */
             this.onClickRestaurantsTab = function() {
-                console.dir(_this.place());
                 _this.navigateTab(_this.tabsList[2]);
             };
 
@@ -109,7 +107,6 @@ define(
              * 
              */
             this.onClickEventsTab = function() {
-                console.dir(_this.place());
                 _this.navigateTab(_this.tabsList[0]);
             };
 

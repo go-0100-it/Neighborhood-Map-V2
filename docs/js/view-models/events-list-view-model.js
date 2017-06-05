@@ -12,9 +12,6 @@ define(
     ) {
         var EventsListViewModel = function(place, data, isError, main) {
 
-            // Getting a reference to this execution context for later reference.
-            var _this = this;
-
             //
             this.template = ko.observable();
 
@@ -52,7 +49,6 @@ define(
              * @param {object} place - 
              */
             this.addPlace = function(place) {
-                console.dir(place);
                 var newPlace = {
                     name: place.venue_name,
                     lat: Number(place.latitude),
@@ -60,8 +56,6 @@ define(
                     address: place.venue_address + ', ' + place.city_name,
                     id: place.id + place.venue_id
                 };
-                alert('Adding new place ');
-                console.dir(newPlace);
                 Main.drawerListViewModel.addPlace(newPlace);
             };
 
