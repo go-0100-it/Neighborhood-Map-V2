@@ -46,7 +46,7 @@ define(
             this.lng = ko.observable(place.lng);
 
             // creating an observable array for reference to the events array.
-            this.data = ko.observableArray(data.events.event);
+            this.data = ko.observableArray(data);
 
             // creating an observable to reference if the request result returned an error.
             this.isErr = ko.observable(isError);

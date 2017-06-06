@@ -1,5 +1,5 @@
 /**
- * Using Require.js to define a module responsible for...
+ * Using Require.js to define a module responsible for creating a template loader
  */
 define(
     [
@@ -8,15 +8,15 @@ define(
     function(
         $
     ) {
-
+        /**
+         * The following simple template loader was created by Benjamin Nickolls and pubished as a Gist found @ https://gist.github.com/BenJam/4504134
+         */
         var templateLoader = {
 
             // Hash of preloaded templates for the app
             templates: {},
 
             // Recursively pre-load all the templates for the app.
-            // This implementation should be changed in a production environment. All the template files should be
-            // concatenated in a single file.
             loadTemplates: function(names, callback) {
 
                 // Getting a reference to this execution context for later reference.
@@ -37,6 +37,7 @@ define(
                 };
                 loadTemplate(0);
             },
+
             // Get template by name from hash of preloaded templates
             get: function(name) {
                 return this.templates[name];
