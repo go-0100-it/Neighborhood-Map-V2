@@ -30,11 +30,11 @@ define([
 
             // Getting a reference to this execution context for later reference.
             var _this = this;
-            let DONE = 4;
-            let OK = 200;
-            let ERROR = 400;
-            let ERR_MSG = 'Something went wrong while processing the data request.';
-            let TIMEOUT_MSG = 'A timeout has occurred./nThe server took to long to respond, the request has been aborted.';
+            var DONE = 4;
+            var OK = 200;
+            var ERROR = 400;
+            var ERR_MSG = 'Something went wrong while processing the data request.';
+            var TIMEOUT_MSG = 'A timeout has occurred./nThe server took to long to respond, the request has been aborted.';
 
             // This variable is used by the callbackSync function.  Used to keep count of the data requests made by the user.
             this.dataRequestCount = 0;
