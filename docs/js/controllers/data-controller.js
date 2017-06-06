@@ -387,11 +387,8 @@ define([
                         // Parsing the response and setting to a variable for readability.
                         var jsonResponse = getRequest.response ? JSON.parse(getRequest.response) : null;
 
-                        console.log('Weather JSON Response:');
-                        console.dir(getRequest.response);
-
                         // Parsing the response and setting to a variable for readability.
-                        currentWeather = jsonResponse ? JSON.parse(getRequest.response) : [{ name: 'No weather data found for this location', location: { address: '' } }];
+                        currentWeather = jsonResponse && jsonResponse !== [] ? jsonResponse : [{ name: 'No weather data found for this location', location: { address: '' } }];
 
                         // Creating a unique label for caching the result
                         var stamp = args.viewVariable + args.place.id;
