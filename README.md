@@ -10,6 +10,19 @@ You will develop a single page application featuring a map of your neighborhood 
 ## Why this Project?
 The neighborhood map application is complex enough and incorporates a variety of data points that it can easily become unwieldy to manage. There are a number of frameworks, libraries and APIs available to make this process more manageable and many employers are looking for specific skills in using these packages.
 <br></br>
+
+One requirement in creating this application was to use the Knockout.js library.  I satisfied this requirement and also included a few other libraries, frameworks and plugins.  They include: 
+
+* **knockout.js** - the main requirement for the app, as described by Udacity, was to use KO
+* **require.js** - the main reason I used require.js was to help keep my code modular but, I got the added benefit of being able to asyncronously load files as needed.
+* **backbone.js** - used backbone for navigation via the backbone router.
+* **jquery** - jquery is a dependancy for backbone and since I wanted to use backbone.js's router it was necessary to use jquery.
+* **underscore.js** - again underscore is another dependancy for backbone and since I wanted to use backbone.js's router it was necessary to use underscore.
+* [**css.js**](https://github.com/martinsb/require-css) - this require.js plugin enables asyncronous loading of css files via require.js
+* [**util.js**](https://gist.github.com/BenJam/4504134) - this code snippet is not really a library, framework or plugin but is worth mentioning as the code is not mine.  This snippet is used to load .html files asyncronously as templates.
+
+
+<br></br>
 <hr></hr>
 
 <a id="run-application"></a>
