@@ -1,5 +1,5 @@
 /**
- * Using Require.js to define a module responsible for...
+ * Using Require.js to define a module responsible for creating a require configuration object and initializing the app.
  */
 requirejs.config({
     //By default load any module IDs from js
@@ -10,7 +10,7 @@ requirejs.config({
     //never includes a ".js" extension since
     //the paths config could be for a directory.
     paths: {
-        /* Libraries */
+        /* Library modules*/
         jquery: 'libs/jquery.min',
         underscore: 'libs/underscore.min',
         backbone: 'libs/backbone.min',
@@ -21,19 +21,19 @@ requirejs.config({
             'https://api.eventful.com/js/api'
         ],
 
-        /*Firebase*/
+        /*Firebase modules*/
         firebase_app: 'https://www.gstatic.com/firebasejs/3.9.0/firebase-app',
         firebase_auth: 'https://www.gstatic.com/firebasejs/3.9.0/firebase-auth',
         firebase_data: 'https://www.gstatic.com/firebasejs/3.9.0/firebase-database',
         firebase_helper: 'controllers/firebase-helper',
 
-        /*Controllers*/
+        /*Controller modules*/
         main_controller: 'controllers/main-controller',
         map_controller: 'controllers/map-controller',
         data_controller: 'controllers/data-controller',
         cache: 'controllers/cache',
 
-        /*ViewsModels*/
+        /*ViewsModel modules*/
         drawer_list_view_model: 'view-models/drawer-list-view-model',
         tabs_view_model: 'view-models/tabs-view-model',
         events_list_view_model: 'view-models/events-list-view-model',
@@ -42,9 +42,9 @@ requirejs.config({
         map_view_model: 'view-models/map-view-model',
         spinner_view_model: 'view-models/spinner-view-model',
         error404_view_model: 'view-models/error404-view-model'
-    },
+    }
 });
-// Start the main app logic.
+// requiring all the base modules needed
 requirejs(
     [
         'jquery',
@@ -61,6 +61,8 @@ requirejs(
         ko,
         tpl
     ) {
+
+        // loading the html templates via the util module
         tpl.loadTemplates(
             [
                 'drawer-list-view',
@@ -73,6 +75,8 @@ requirejs(
                 'error404-view'
             ],
             function() {
+
+                // requiring the necessary firebase modules as well as the base css required.
                 requirejs(
                     [
                         'firebase_auth',
@@ -84,7 +88,7 @@ requirejs(
                     ],
                     function() {
 
-                        // Initialize Firebase
+                        // Initializing Firebase
                         var configFB = {
                             apiKey: "AIzaSyAlFaHJIu2go9re03lp6AaunDBfuI9GkCk",
                             authDomain: "neighbourhoodmap-1491157111381.firebaseapp.com",
@@ -94,6 +98,7 @@ requirejs(
                             messagingSenderId: "139908232326"
                         };
                         firebase.initializeApp(configFB);
+                        // requiring the app module to initialize the app
                         requirejs(
                             [
                                 'app'
@@ -101,7 +106,7 @@ requirejs(
                             function(
                                 app
                             ) {
-                                //
+                                // initializing the app
                                 app.initialize();
                             });
                     });

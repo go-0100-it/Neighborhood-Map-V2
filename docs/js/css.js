@@ -1,9 +1,6 @@
 /**
- * 
- * 
- * 
- * 
- * 
+ * This small requirejs plug-in was created by Martins Barinskis.  It enables the asycronous loading of css files with requirejs.
+ * His project can be found @ github --> https://github.com/martinsb/require-css.
  */
 
 var cssloaded = false;

@@ -1,5 +1,5 @@
 /**
- * Using Require.js to define a module responsible for rendering the map view html template
+ * Using Require.js to define a module responsible for creating a KO view model.
  */
 define(
     [

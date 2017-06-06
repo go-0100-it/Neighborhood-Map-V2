@@ -1,5 +1,5 @@
 /**
- * Using Require.js to define a module responsible for...
+ * Using Require.js to define a module responsible for creating a backbone router
  */
 define(
     [
@@ -11,10 +11,9 @@ define(
         MainController
     ) {
 
-        //
+        // creating a Backbone router
         var Router = Backbone.Router.extend({
 
-            // Constructor
             initialize: function() {
 
                 //Required for Backbone to start listening to hashchange events
@@ -23,20 +22,20 @@ define(
 
             routes: {
 
-                // Calls the home method when there is no hashtag on the url
+                // Calls the placesOnMap method when there is no hashtag in the url
                 '': 'placesOnMap',
                 'places/:id/:name/:address/:lat/:lng': 'placeOnMap',
                 'events/:id/:name/:address/:lat/:lng': 'events',
                 'weather/:id/:name/:address/:lat/:lng': 'weather',
                 'restaurants/:id/:name/:address/:lat/:lng': 'restaurants',
-                '*path': 'error404'
+                '*path': 'error404' // (default) this path is called for all other urls
             },
 
 
 
 
             /**
-             * 
+             * A function to render the drawer list and the map without a selected place
              */
             'placesOnMap': function() {
 
@@ -48,7 +47,7 @@ define(
 
 
             /**
-             * 
+             * A function to render the drawer list and the map with a selected place
              */
             'placeOnMap': function(id, name, address, lat, lng) {
 
@@ -63,7 +62,7 @@ define(
 
 
             /**
-             * 
+             * A function to render tabs view with the events view for a given place
              */
             'events': function(id, name, address, lat, lng) {
 
@@ -79,7 +78,7 @@ define(
 
 
             /**
-             * 
+             * A function to render tabs view with the weather view for a given place
              */
             'weather': function(id, name, address, lat, lng) {
 
@@ -95,7 +94,7 @@ define(
 
 
             /**
-             * 
+             * A function to render tabs view with the restaurants view for a given place
              */
             'restaurants': function(id, name, address, lat, lng) {
 
@@ -111,7 +110,7 @@ define(
 
 
             /**
-             * 
+             * A function to render the 404 error view for page not found
              */
             'error404': function() {
 
@@ -121,6 +120,6 @@ define(
             }
         });
 
-        //
+        // returning the router
         return Router;
     });

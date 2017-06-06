@@ -76,7 +76,7 @@ define(
             // creating an observable to show or hide the name request element
             this.nameRequestVisible = ko.observable(false);
 
-            // creating an observable array to for the list of user places
+            // creating an observable array for the list of user places
             this.places = ko.observableArray(places);
 
 
