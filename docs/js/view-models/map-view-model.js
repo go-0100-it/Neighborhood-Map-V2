@@ -23,6 +23,8 @@ define(
             // creating a observable for toggling the view state.
             this.showMap = ko.observable(true);
 
+            this.place = ko.observable({});
+
             // returning this MapViewModel
             return this;
         };

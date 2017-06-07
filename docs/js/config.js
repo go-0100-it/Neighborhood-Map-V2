@@ -40,6 +40,7 @@ requirejs.config({
         weather_list_view_model: 'view-models/weather-list-view-model',
         restaurants_list_view_model: 'view-models/restaurants-list-view-model',
         map_view_model: 'view-models/map-view-model',
+        info_window_view_model: 'view-models/info-window-view-model',
         spinner_view_model: 'view-models/spinner-view-model',
         error404_view_model: 'view-models/error404-view-model'
     }

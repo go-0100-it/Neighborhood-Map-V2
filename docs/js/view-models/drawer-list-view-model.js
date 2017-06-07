@@ -431,11 +431,11 @@ define(
                 _this.map.centerOnLocation(loc);
 
                 // if the currently open window is not the places corresponding info window
-                if (_this.map.openWindow !== _this.map.infoWindows[index]) {
+                // if (_this.map.openWindow !== _this.map.infoWindows[index]) {
 
-                    // close the open window and open the places corresponding info window.
-                    _this.map.toggleWindowsMarkers(_this.map.infoWindows[index], _this.map.markers[index], _this.map);
-                }
+                // open the places corresponding info window.
+                _this.map.toggleWindowsMarkers(_this.map.markers[index], _this.map);
+                //}
             };
 
 

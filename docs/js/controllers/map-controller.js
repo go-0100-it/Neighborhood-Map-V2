@@ -6,12 +6,14 @@ define([
         'jquery',
         'knockout',
         'map_view_model',
+        'info_window_view_model',
         'util'
     ],
     function(
         $,
         ko,
         MapViewModel,
+        InfoWindowViewModel,
         tpl
     ) {
 
@@ -41,6 +43,8 @@ define([
             // Declaring and intitializong a variable for reference to the marker corresponding to the currently open info window.
             this.openMarker = null;
 
+            this.windowBindingsApplied = false;
+
 
 
             /**
@@ -55,16 +59,42 @@ define([
                     // Creating the map view model.
                     _this.mapViewModel = new MapViewModel();
 
+                    // Creating the map view model.
+                    _this.infoWindowViewModel = new InfoWindowViewModel();
+
                     // Adding the map html template to render the map container.
                     _this.mapViewModel.template(tpl.get('map'));
 
+                    // Creating the custom info window to contain the place img, place details and a button to request more info.
+                    _this.infowindow = new google.maps.InfoWindow({
+                        content: '<div id="info-window-container" class="info-window-container">' +
+                            '<div class="info-window">' +
+                            '<h1 databind="text,  place.name"></h1>' +
+                            '</div>' +
+                            '</div>'
+                    });
+
                     // Applying KO's bindings to the map container.  Only using to hide and show the map.
                     ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);
+
+                    google.maps.event.addDomListener(_this.infowindow, 'domready', function() {
+                        console.log('Applying Bindings');
+                        if (!_this.windowBindingsApplied) {
+                            ko.cleanNode($('#map-container-view')[0]);
+                            ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);
+                            _this.windowBindingsApplied = true;
+                        }
+                    });
 
 
                     // Creating a google.maps.Map object which is the actual map.
                     _this.map = new google.maps.Map(document.getElementById('map'), {
                         zoom: 8
+                    });
+
+
+                    google.maps.event.addListener(_this.infowindow, "closeclick", function(e) {
+                        _this.toggleWindowsMarkers(_this.openMarker, _this.map);
                     });
 
                 } else {
@@ -92,24 +122,27 @@ define([
             };
 
 
-
-
             /**
              * A function to open the info window and all other related tasks.
              * @param {object} infoWindow - the info window to open (render to the view)
              * @param {object} marker - the marker that corresponds to the info window passed in.
              * @param {object} map - the map object to render the info window.
              */
-            this.openInfoWindow = function(infoWindow, marker, map) {
+            this.openInfoWindow = function(marker, map) {
 
                 // Setting the marker object passed in to the openMarker property for future reference.
                 _this.openMarker = marker;
 
                 // Setting the infoWindow object passed in to the openWindow property for future reference.
-                _this.openWindow = infoWindow;
+                _this.openWindow = _this.infowindow;
+
+                // var content = _this.createContent(marker.place);
 
                 // Calling the open window function to open the info window.
-                infoWindow.open(map, marker);
+                _this.infowindow.open(map, marker);
+
+                // _this.infowindow.setContent(content);
+                _this.mapViewModel.place(marker.place);
 
                 // Mark the associated marker bounce when the info window is open.
                 marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -125,7 +158,7 @@ define([
             this.closeInfoWindow = function(map) {
 
                 // Calling the closeWindow function to close the currently open window.
-                _this.openWindow.close(map, _this.openMarker);
+                _this.infowindow.close(map, _this.openMarker);
 
                 // Removing the animation set to the marker when opening the info window.
                 _this.openMarker.setAnimation(null);
@@ -156,6 +189,18 @@ define([
                 }
             };
 
+            this.createContent = function(place) {
+                return '<div class="info-window-container">' +
+                    '<div class="info-window">' +
+                    '<h1>' + place.name + '</h1>' +
+                    '<img id="info-img" src="https://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + place.address + '&pitch=2&key=AIzaSyBSpWUS_wBjBq5kXfnbQO19ewpQPdStRDg">' +
+                    '<h3>' + place.address + '</h3>' +
+                    '<h3>Latitude: ' + place.lat + '&nbsp&nbsp Longitude: ' + place.lng + '</h3>' +
+                    '<button databind="click, getInfo" type="submit" class="map-info-btn" id="infoWin-' + place.id + '">Get Info</button>' +
+                    '</div>' +
+                    '</div>';
+            };
+
 
             /**
              * A function to create the marker and info window objects and 
@@ -170,28 +215,34 @@ define([
                     animation: google.maps.Animation.DROP
                 });
 
+                marker.place = place;
+
 
                 // Saving the marker to an array for future reference
                 _this.markers.push(marker);
 
 
-                // Creating the custom info window to contain the place img, place details and a button to request more info.
-                var infowindow = new google.maps.InfoWindow({
-                    content: '<div class="info-window-container">' +
-                        '<div class="info-window">' +
-                        '<h1>' + place.name + '</h1>' +
-                        '<img id="info-img" src="https://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + place.address + '&pitch=2&key=AIzaSyBSpWUS_wBjBq5kXfnbQO19ewpQPdStRDg">' +
-                        '<h3>' + place.address + '</h3>' +
-                        '<h3>Latitude: ' + place.lat + '&nbsp&nbsp Longitude: ' + place.lng + '</h3>' +
-                        '<button type="submit" class="map-info-btn" id="infoWin-' + place.id + '">Get Info</button>' +
-                        '</div>' +
-                        '</div>',
-                    place: place,
-                    clickListenerAdded: false
-                });
+                // // Creating the custom info window to contain the place img, place details and a button to request more info.
+                // var infowindow = new google.maps.InfoWindow({
+                //     content: '<div class="info-window-container">' +
+                //         '<div class="info-window">' +
+                //         '<h1>' + place.name + '</h1>' +
+                //         '<img id="info-img" src="https://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + place.address + '&pitch=2&key=AIzaSyBSpWUS_wBjBq5kXfnbQO19ewpQPdStRDg">' +
+                //         '<h3>' + place.address + '</h3>' +
+                //         '<h3>Latitude: ' + place.lat + '&nbsp&nbsp Longitude: ' + place.lng + '</h3>' +
+                //         '<button type="submit" class="map-info-btn" id="infoWin-' + place.id + '">Get Info</button>' +
+                //         '</div>' +
+                //         '</div>',
+                //     place: place,
+                //     clickListenerAdded: false
+                // });
 
-                // Saving the info window to an array for future reference.
-                _this.infoWindows.push(infowindow);
+                // // Saving the info window to an array for future reference.
+                // _this.infoWindows.push(infowindow);
+
+                marker.addListener('click', function() {
+                    _this.toggleWindowsMarkers(marker, _this.map);
+                });
 
 
                 /**
@@ -202,61 +253,61 @@ define([
                  * @param {object} _marker - the marker to add the event listeners to.
                  * @param {object} _place - the place object the marker and info window were created for.
                  */
-                (function(_infowindow, _map, _marker, _place) {
+                // (function(_infowindow, _map, _marker, _place) {
 
-                    // Adding a Dom listener event to get a callback when the Dom has been rendered.
-                    google.maps.event.addDomListener(_infowindow, 'domready', function() {
+                //     // Adding a Dom listener event to get a callback when the Dom has been rendered.
+                //     google.maps.event.addDomListener(_infowindow, 'domready', function() {
 
-                        // Checking if a click listener has already beem added to this info window.
-                        if (!_infowindow.clickListenerAdded) {
+                //         // Checking if a click listener has already beem added to this info window.
+                //         if (!_infowindow.clickListenerAdded) {
 
-                            // if a click listener has not been added then add one
-                            $('#infoWin-' + _infowindow.place.id).click(function() {
+                //             // if a click listener has not been added then add one
+                //             $('#infoWin-' + _infowindow.place.id).click(function() {
 
-                                // the callback function will navigate to the events tab for the place corresponding to the info window.
-                                Backbone.history.navigate('#events/' + _infowindow.place.id + '/' + _infowindow.place.name + '/' + _infowindow.place.address + '/' + _infowindow.place.lat + '/' + _infowindow.place.lng, { trigger: true });
-                            });
+                //                 // the callback function will navigate to the events tab for the place corresponding to the info window.
+                //                 Backbone.history.navigate('#events/' + _infowindow.place.id + '/' + _infowindow.place.name + '/' + _infowindow.place.address + '/' + _infowindow.place.lat + '/' + _infowindow.place.lng, { trigger: true });
+                //             });
 
-                            // Set the listener added flag to true.
-                            _infowindow.clickListenerAdded = true;
-                        }
-
-
-                        // get a reference to the info windows close button.  This is needed to sync the marker animation to the info 
-                        // window open and close.
-                        var btnOverlay = $("img[src$='maps.gstatic.com/mapfiles/transparent.png']")[0];
-                        var closeBtn = $("img[src$='maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png']")[0];
-
-                        // if the btnOverlay element exists then add a click listener to call the closeInfoWindow function that indirectly 
-                        // stops the associated marker animation.  
-                        if (typeof btnOverlay === 'object') {
-                            btnOverlay.addEventListener('click', function() {
-                                _this.closeInfoWindow(_map);
-                            });
-                        }
-
-                        // if the closeBtn element exists then add a click listener to call the closeInfoWindow function that indirectly 
-                        // stops the associated marker animation.  
-                        if (typeof closeBtn === 'object') {
-                            closeBtn.addEventListener('click', function() {
-                                _this.closeInfoWindow(_map);
-                            });
-                        }
-                    });
+                //             // Set the listener added flag to true.
+                //             _infowindow.clickListenerAdded = true;
+                //         }
 
 
+                //         // get a reference to the info windows close button.  This is needed to sync the marker animation to the info 
+                //         // window open and close.
+                //         var btnOverlay = $("img[src$='maps.gstatic.com/mapfiles/transparent.png']")[0];
+                //         var closeBtn = $("img[src$='maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png']")[0];
 
-                    // add a click listener to the marker to also close and open the info window and start and stop the markers
-                    // animation.
-                    _marker.addListener('click', function() {
-                        _this.toggleWindowsMarkers(_infowindow, _marker, _map);
-                    });
+                //         // if the btnOverlay element exists then add a click listener to call the closeInfoWindow function that indirectly 
+                //         // stops the associated marker animation.  
+                //         if (typeof btnOverlay === 'object') {
+                //             btnOverlay.addEventListener('click', function() {
+                //                 _this.closeInfoWindow(_map);
+                //             });
+                //         }
 
-                    // rendering the marker in the map.
-                    _marker.setMap(_map);
+                //         // if the closeBtn element exists then add a click listener to call the closeInfoWindow function that indirectly 
+                //         // stops the associated marker animation.  
+                //         if (typeof closeBtn === 'object') {
+                //             closeBtn.addEventListener('click', function() {
+                //                 _this.closeInfoWindow(_map);
+                //             });
+                //         }
+                //     });
 
-                    // immediately invoking this function to encapsulate the references.
-                })(infowindow, _this.map, marker, place);
+
+
+                //     // add a click listener to the marker to also close and open the info window and start and stop the markers
+                //     // animation.
+                //     _marker.addListener('click', function() {
+                //         _this.toggleWindowsMarkers(_infowindow, _marker, _map);
+                //     });
+
+                //     // rendering the marker in the map.
+                //     _marker.setMap(_map);
+
+                //     // immediately invoking this function to encapsulate the references.
+                // })(infowindow, _this.map, marker, place);
 
             };
 
@@ -269,11 +320,11 @@ define([
              * @param {object} marker - the marker to add/remove the animation
              * @param {object} map - the map containing the info window and marker
              */
-            this.toggleWindowsMarkers = function(infowindow, marker, map) {
+            this.toggleWindowsMarkers = function(marker, map) {
 
                 // if no info window is currenly open then open the info window passed in.
-                if (_this.openWindow === null) {
-                    _this.openInfoWindow(infowindow, marker, map);
+                if (_this.openMarker === null) {
+                    _this.openInfoWindow(marker, map);
 
                     // if there is currently an info window open
                 } else {
@@ -282,7 +333,7 @@ define([
                     // open the info window passed in.
                     if (marker !== _this.openMarker) {
                         _this.closeInfoWindow(map);
-                        _this.openInfoWindow(infowindow, marker, map);
+                        _this.openInfoWindow(marker, map);
 
                         // if the marker passed in is the currenly open marker then close the info window passed in.
                     } else {
