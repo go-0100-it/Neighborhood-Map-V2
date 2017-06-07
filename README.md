@@ -25,19 +25,63 @@ One requirement in creating this application was to use the Knockout.js library.
 <br></br>
 <hr></hr>
 
-<a id="run-application"></a>
+## To run this application
 
-## To run this application &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [` ^ `](#top "Go to top of page")
+To run this Web App on your local machine you will need to set-up a simple web server.  There are multiple options available to do this, I will give 2 examples.
 
-1. On the [main repository page](https://github.com/go-0100-it/Neighborhood-Map-V2 "Go to main repository page") click &nbsp;![Clone or download button image](images/clone-download-btn.png)&nbsp; and download the project zip file or you can just click this button &nbsp;[![Download button image](images/download-btn.png)](https://github.com/go-0100-it/Neighborhood-Map-V2/archive/master.zip "Download project .zip file")&nbsp; to download the zipped files to your computer.
-
-2. Unzip the file.
-
-3. Browse to the docs folder located at<br></br> 
-`Neighborhood-Map-V2-master\Neighborhood-Map-V2-master\docs`<br></br> 
-and locate the `index.html` file.
-
-4. Open `index.html` in the browser of your choice.
+* python's [SimpleHTTPServer](#python-method)
+* node.js's [Simple HTTP server](#node-method)
 
 ### Or you can view the GitHub hosted version of the [**Web App**](https://go-0100-it.github.io/Neighborhood-Map-V2/).
 <br></br>
+<hr></hr>
+
+<a id="python-method"></a>
+### **Python** - SimpleHTTPServer method
+
+1. You'll need Python version 2.7 installed.  If you don't have Python installed see [**here**](https://www.python.org/downloads/release/python-2713/) for the download and installation method.  Once you have python installed you can proceed to step 2.
+
+2. On the Neighborhood Maps's [main repository page](https://github.com/go-0100-it/Neighborhood-Map-V2 "Go to main repository page") click &nbsp;![Clone or download button image](images/clone-download-btn.png)&nbsp; and download the project zip file or you can just click this button &nbsp;[![Download button image](images/download-btn.png)](https://github.com/go-0100-it/Neighborhood-Map-V2/archive/master.zip "Download project .zip file")&nbsp; to download the zipped files to your computer.
+
+3. Unzip the file.
+
+4. Using the command line navigate to the docs folder e.g.<br></br> 
+`cd Neighborhood-Map-V2-master\Neighborhood-Map-V2-master\docs`<br></br> 
+
+5. Within the docs folder start python's simple server by typing the command <br></br>
+`python -m SimpleHTTPServer 8000`<br></br>
+After a few seconds you should get the following message or similar in the command line <br></br>
+`Serving HTTP on 0.0.0.0 port 8000 ...`
+
+6. Lastly, open a web browser of your choice and type in the following URL<br></br>
+`http://localhost:8000`
+<br></br>
+<hr></hr>
+
+<a id="node-method"></a>
+### **Node.js** - Simple HTTP Server method
+
+1. You'll need Node installed to run this option.  If you don't have Node installed see [**here**](https://nodejs.org/) for the download and installation method. Once you have node installed you can proceed to step 2.
+
+2. Install the http-server package from npm. [Installing with NPM](https://docs.npmjs.com/cli/install) Install the http-server globally on your machine using the node package manager (npm) command line tool, this will allow you to run a web server from anywhere on your computer. Open a command line window and enter the following:<br></br>
+`npm install -g http-server`
+
+2. On the Neighborhood Maps's [main repository page](https://github.com/go-0100-it/Neighborhood-Map-V2 "Go to main repository page") click &nbsp;![Clone or download button image](images/clone-download-btn.png)&nbsp; and download the project zip file or you can just click this button &nbsp;[![Download button image](images/download-btn.png)](https://github.com/go-0100-it/Neighborhood-Map-V2/archive/master.zip "Download project .zip file")&nbsp; to download the zipped files to your computer.
+
+3. Unzip the file.
+
+4. Using the command line navigate to the docs folder e.g.<br></br> 
+`cd Neighborhood-Map-V2-master\Neighborhood-Map-V2-master\docs`<br></br> 
+
+5. Within the docs folder start node's simple server by typing the command<br></br>
+`http-server`<br></br>
+After a few seconds you should get the following message or similar in the command line<br></br>
+`Starting up http-server, serving ./`<br>
+`Available on:`<br>
+`  http://192.168.0.5:8080`<br>
+`  http://127.0.0.1:8080`<br>
+`Hit CTRL-C to stop the server`<br></br>
+
+
+6. Lastly, open a web browser of your choice and type in the following URL<br></br>
+`http://localhost:8080`
