@@ -19,23 +19,25 @@ define(
 
             var _this = this;
 
-            this.place = ko.observable({ lat:0, lng:0, address:'' });
+            this.place = ko.observable({ name: 'Loading', lat: '', lng: '', address: '' });
 
-            this.loc = ko.computed(function(){
+            this.loc = ko.computed(function() {
                 return 'Latitude: ' + _this.place().lat + '   Longitude: ' + _this.place().lng;
             });
 
-            this.imgSrc = ko.computed(function(){
-                return 'https://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + _this.place().address + '&pitch=2&key=AIzaSyBSpWUS_wBjBq5kXfnbQO19ewpQPdStRDg';
+            this.imgSrc = ko.computed(function() {
+                console.log("figuring src");
+                console.log(_this.place().name);
+                return _this.place().name === 'Loading' ? 'res/images/loading-1.gif' : 'https://maps.googleapis.com/maps/api/streetview?size=400x200&location=' + _this.place().address + '&pitch=2&key=AIzaSyBSpWUS_wBjBq5kXfnbQO19ewpQPdStRDg';
             });
 
             this.mapViewModel = mapViewModel;
 
-            this.getInfo = function(){
+            this.getInfo = function() {
                 alert('Getting Info');
             };
 
-            this.hideMap = function(){
+            this.hideMap = function() {
                 ko.cleanNode($('#info-window-container')[0]);
                 // Applying KO's bindings to the map container.  Only using to hide and show the map.
                 ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);

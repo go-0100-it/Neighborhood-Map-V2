@@ -67,15 +67,7 @@ define([
 
                     // Creating the custom info window to contain the place img, place details and a button to request more info.
                     _this.infowindow = new google.maps.InfoWindow({
-                        content: '<div id="info-window-container" class="info-window-container">' +
-                            '<div class="info-window">' +
-                            '<h1 data-bind="text:  place().name"></h1>' +
-                            '<img data-bind="attr: { src: imgSrc }" id="info-img" >' +
-                           '<h3 data-bind="text:  place().address"></h3>' +
-                           '<h3 data-bind="text:  loc"></h3>' +
-                           '<button data-bind="click: getInfo" type="submit" class="map-info-btn">Get Info</button>' +
-                           '</div>' +
-                           '</div>'
+                        content: _this.createContent(true)
                     });
 
                     // Applying KO's bindings to the map container.  Only using to hide and show the map.
@@ -83,15 +75,13 @@ define([
 
                     google.maps.event.addDomListener(_this.infowindow, 'domready', function() {
                         console.log('Applying Bindings');
-                        
-                            ko.cleanNode($('#map-container-view')[0]);
-                            
-                            // _this.infowindow.setContent(content);
-                            _this.infoWindowViewModel.place(_this.openMarker.place);
-                            ko.applyBindings(_this.infoWindowViewModel, $('#info-window-container')[0]);
-                            _this.windowBindingsApplied = true;
-                            
-                        
+                        ko.cleanNode($('#map-container-view')[0]);
+
+                        ko.applyBindings(_this.infoWindowViewModel, $('#info-window-container')[0]);
+
+                        // _this.infowindow.setContent(content);
+                        _this.infoWindowViewModel.place(_this.openMarker.place);
+
                     });
 
 
@@ -102,7 +92,7 @@ define([
 
 
                     google.maps.event.addListener(_this.infowindow, "closeclick", function(e) {
-                        _this.toggleWindowsMarkers(_this.openMarker, _this.map);
+                        _this.closeInfoWindow();
                     });
 
                 } else {
@@ -129,6 +119,20 @@ define([
                 _this.centerOnLocation(loc);
             };
 
+            this.createContent = function(none) {
+                return none ? '<div id="info-window-container" class="info-window-container">' +
+                    '<div class="info-window">' +
+                    '<h1 data-bind="text:  place().name"></h1>' +
+                    '<div id="info-window-img-container">' +
+                    '<img data-bind="attr: { src: imgSrc }" id="info-img" >' +
+                    '</div>' +
+                    '<h3 data-bind="text:  place().address"></h3>' +
+                    '<h3 data-bind="text:  loc"></h3>' +
+                    '<button data-bind="click: getInfo" type="submit" class="map-info-btn">Get Info</button>' +
+                    '</div>' +
+                    '</div>' : '';
+            };
+
 
             /**
              * A function to open the info window and all other related tasks.
@@ -138,13 +142,13 @@ define([
              */
             this.openInfoWindow = function(marker, map) {
 
+                _this.infowindow.setContent(_this.createContent(true));
+
                 // Setting the marker object passed in to the openMarker property for future reference.
                 _this.openMarker = marker;
 
                 // Setting the infoWindow object passed in to the openWindow property for future reference.
                 _this.openWindow = _this.infowindow;
-
-                // var content = _this.createContent(marker.place);
 
                 // Calling the open window function to open the info window.
                 _this.infowindow.open(map, marker);
@@ -160,10 +164,9 @@ define([
              * A function to close the info window and all other related tasks.
              * @param {object} map - 
              */
-            this.closeInfoWindow = function(map) {
+            this.closeInfoWindow = function() {
 
-                // Calling the closeWindow function to close the currently open window.
-                _this.infowindow.close(map, _this.openMarker);
+                _this.infowindow.setContent(_this.createContent(false));
 
                 // Removing the animation set to the marker when opening the info window.
                 _this.openMarker.setAnimation(null);
@@ -173,6 +176,9 @@ define([
 
                 // Clearing the open window reference.
                 _this.openWindow = null;
+
+                // Calling the closeWindow function to close the currently open window.
+                _this.infowindow.close(_this.map, _this.openMarker);
             };
 
 
@@ -228,25 +234,22 @@ define([
              */
             this.toggleWindowsMarkers = function(marker, map) {
 
-                _this.infoWindowViewModel.place({ name: '', address: '', lat: 0, lng: 0 });
-
                 // if no info window is currenly open then open the info window passed in.
                 if (_this.openMarker === null) {
                     _this.openInfoWindow(marker, map);
 
                     // if there is currently an info window open
                 } else {
-
+                    _this.infoWindowViewModel.place({ name: 'Loading', address: '', lat: '', lng: '' });
                     // and if the marker passed in is not the currently open marker then close the currently open window and then
                     // open the info window passed in.
                     if (marker !== _this.openMarker) {
-                        ko.cleanNode($('#info-window-container')[0]);
-                        _this.closeInfoWindow(map);
+                        _this.closeInfoWindow();
                         _this.openInfoWindow(marker, map);
 
                         // if the marker passed in is the currenly open marker then close the info window passed in.
                     } else {
-                        _this.closeInfoWindow(map);
+                        _this.closeInfoWindow();
                     }
 
                 }
