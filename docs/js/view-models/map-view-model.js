@@ -18,7 +18,7 @@ define(
         var MapViewModel = function() {
 
             // creating an observable for the html template
-            this.template = ko.observable();
+            //this.template = ko.observable();
 
             // creating a observable for toggling the view state.
             this.showMap = ko.observable(true);

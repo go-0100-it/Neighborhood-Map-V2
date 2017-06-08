@@ -94,7 +94,9 @@
     <div class="container">
         <div class="tabs-container-view" id="tabs-container-view" data-bind="html: template"></div>
         <div class="tab-container-view" id="tab-container" data-bind="html: template"></div>
-        <div class="map-container-view" id="map-container-view" data-bind="visible: showMap, html: template"></div>
+        <div class="map-container-view" id="map-container-view" data-bind="visible: showMap">
+            <div id="map"></div>
+        </div>
         <div class="error-container-view" id="error-container-view" data-bind="html: template"></div>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcqT6Cvr1Qr7B3BqhkinjManD4gywWGHA" async defer></script>
