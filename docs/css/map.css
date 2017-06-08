@@ -50,6 +50,10 @@
     height: 60px;
 }
 
+#info-window-container {
+    max-width: 430px;
+}
+
 #info-window-img-container {
     margin: 0 auto;
     text-align: center;
