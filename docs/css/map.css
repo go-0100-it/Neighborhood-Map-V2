@@ -51,6 +51,7 @@
 }
 
 #info-window-img-container {
+    margin: 0 auto;
     text-align: center;
     display: table-cell;
     vertical-align: middle;
