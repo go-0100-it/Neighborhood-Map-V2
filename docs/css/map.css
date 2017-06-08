@@ -51,13 +51,12 @@
 }
 
 #info-window-img-container {
-    margin: 0 auto;
     text-align: center;
     display: table-cell;
     vertical-align: middle;
-    width: auto;
+    width: 400px;
     height: 200px;
-    background-image: url('res/images/tras.png');
+    background-image: url('./res/images/tras.png');
 }
 
 #map-icon {
