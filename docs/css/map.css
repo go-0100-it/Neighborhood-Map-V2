@@ -56,7 +56,7 @@
     vertical-align: middle;
     width: 400px;
     height: 200px;
-    background-image: url('./res/images/tras.png');
+    background-image: url('../res/images/tras.png');
 }
 
 #map-icon {
