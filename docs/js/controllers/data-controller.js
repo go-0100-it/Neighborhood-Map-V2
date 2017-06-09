@@ -389,7 +389,7 @@ define([
 
 
                         // Parsing the response and setting to a variable for readability.
-                        currentWeather = jsonResponse && jsonResponse !== [] ? jsonResponse : {data: {current_condition: [{weatherDesc: [{ value: 'No forcast found for this location' }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '', maxtempC: ''}]}};
+                        currentWeather = jsonResponse && jsonResponse !== [] ? jsonResponse : { data: { current_condition: [{ weatherDesc: [{ value: 'No forcast found for this location' }], weatherIconUrl: [''], temp_C: '' }], weather: [{ mintempC: '', maxtempC: '' }] } };
 
                         // Creating a unique label for caching the result
                         var stamp = args.viewVariable + args.place.id;
@@ -404,8 +404,8 @@ define([
                         // If the response from server is an error, log the error
                     } else if (getRequest.readyState == DONE && getRequest.status > OK) {
                         var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
-                        _this.processError(err, {data: {current_condition: [{weatherDesc: [{ value: ERR_MSG + ' ' + err.type }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '',maxtempC: ''}]}}, 
-                                                callId, args, func);
+                        _this.processError(err, { data: { current_condition: [{ weatherDesc: [{ value: ERR_MSG + ' ' + err.type }], weatherIconUrl: [''], temp_C: '' }], weather: [{ mintempC: '', maxtempC: '' }] } },
+                            callId, args, func);
                     }
                 };
 
@@ -423,7 +423,7 @@ define([
 
                     // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
                     // to the user.
-                    _this.processError(err, {data: {current_condition: [{weatherDesc: [{ value: ERR_MSG + ' ' + err.type }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '',maxtempC: ''}]}}, callId, args, func);
+                    _this.processError(err, { data: { current_condition: [{ weatherDesc: [{ value: ERR_MSG + ' ' + err.type }], weatherIconUrl: [''], temp_C: '' }], weather: [{ mintempC: '', maxtempC: '' }] } }, callId, args, func);
                 };
 
 
@@ -437,7 +437,7 @@ define([
 
                     // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
                     // to the user.
-                    _this.processError(err, {data: {current_condition: [{weatherDesc: [{ value: err.msg }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '',maxtempC: ''}]}}, callId, args, func);
+                    _this.processError(err, { data: { current_condition: [{ weatherDesc: [{ value: err.msg }], weatherIconUrl: [''], temp_C: '' }], weather: [{ mintempC: '', maxtempC: '' }] } }, callId, args, func);
                 };
 
 

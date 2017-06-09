@@ -53,8 +53,8 @@ define(
             // creating an observable to reference if the request result returned an error.
             this.isErr = ko.observable(isError);
 
-            this.showEls = ko.computed(function(){
-                return _this.isErr() || _this.name() === 'No restaurants found for this location' ? false : true;
+            this.showEls = ko.computed(function() {
+                return _this.isErr() || _this.data()[0].name === 'No restaurants found for this location' ? false : true;
             });
 
 
