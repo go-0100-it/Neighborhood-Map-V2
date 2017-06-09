@@ -169,7 +169,7 @@ define([
                     var stamp = args.viewVariable + args.place.id;
                     // If there was an event array returned containing events for the API request then assign to the events variable.
                     // If the event array returned was empty then assign a default object to the events variable to inform the user.
-                    var data = oData.events.event.length !== 0 ? oData : { events: { event: [{ title: 'No events found for this location', image: null, start_time: '', venue_url: '', venue_address: '' }] } };
+                    var data = oData && oData.events && oData.events.event.length !== 0 ? oData : { events: { event: [{ title: 'No events found for this location', image: null, start_time: '', venue_url: '', venue_address: '' }] } };
 
                     // Caching the result to reduce the number of Http requests.
                     Cache.storeResult(stamp, 3600000, data);
@@ -291,7 +291,7 @@ define([
 
                         // Parsing the response and setting to a variable for readability if the array returned has values.  If the array is empty creating a default message
                         // to display inform the user no results were found.
-                        restaurants = jsonResponse.restaurants.length !== 0 ? jsonResponse.restaurants : [{ name: 'No restaurants found for this location', cuisine: '', location: { address: '' } }];
+                        restaurants = jsonResponse.restaurants && jsonResponse.restaurants.length !== 0 ? jsonResponse.restaurants : [{ name: 'No restaurants found for this location', cuisine: '', location: { address: '' } }];
 
                         // Creating a unique label for caching the result
                         var stamp = args.viewVariable + args.place.id;
@@ -387,8 +387,9 @@ define([
                         // Parsing the response and setting to a variable for readability.
                         var jsonResponse = getRequest.response ? JSON.parse(getRequest.response) : null;
 
+
                         // Parsing the response and setting to a variable for readability.
-                        currentWeather = jsonResponse && jsonResponse !== [] ? jsonResponse : [{ name: 'No weather data found for this location', location: { address: '' } }];
+                        currentWeather = jsonResponse && jsonResponse !== [] ? jsonResponse : {data: {current_condition: [{weatherDesc: [{ value: 'No forcast found for this location' }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '', maxtempC: ''}]}};
 
                         // Creating a unique label for caching the result
                         var stamp = args.viewVariable + args.place.id;
@@ -403,7 +404,8 @@ define([
                         // If the response from server is an error, log the error
                     } else if (getRequest.readyState == DONE && getRequest.status > OK) {
                         var err = { msg: getRequest.responseText, type: 'ERROR: ' + getRequest.status };
-                        _this.processError(err, [{ name: ERR_MSG + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
+                        _this.processError(err, {data: {current_condition: [{weatherDesc: [{ value: ERR_MSG + ' ' + err.type }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '',maxtempC: ''}]}}, 
+                                                callId, args, func);
                     }
                 };
 
@@ -421,7 +423,7 @@ define([
 
                     // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
                     // to the user.
-                    _this.processError(err, [{ name: err.msg + ' ' + err.type, cuisine: '', location: { address: '' } }], callId, args, func);
+                    _this.processError(err, {data: {current_condition: [{weatherDesc: [{ value: ERR_MSG + ' ' + err.type }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '',maxtempC: ''}]}}, callId, args, func);
                 };
 
 
@@ -435,7 +437,7 @@ define([
 
                     // Calling the processError function to log the error to the console and continue rendering the view to indicate the error
                     // to the user.
-                    _this.processError(err, [{ name: err.msg, cuisine: '', location: { address: '' } }], callId, args, func);
+                    _this.processError(err, {data: {current_condition: [{weatherDesc: [{ value: err.msg }],weatherIconUrl: [''],temp_C: ''}],weather: [{mintempC: '',maxtempC: ''}]}}, callId, args, func);
                 };
 
 

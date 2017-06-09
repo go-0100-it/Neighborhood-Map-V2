@@ -10,11 +10,11 @@
         <ul class="tab-list" data-bind="foreach: { data: data, as: 'restaurant' }">
             <li class="tab-list-item">
                 <div class="tab-list-item-container">
-                    <div class="tab-list-item-img" data-bind="visible: restaurant.name !== 'No restaurants found for this location' && $parent.isErr !== true">
+                    <div class="tab-list-item-img" data-bind="visible: $parent.showEls">
                         <img class="item-img" style="width: 100px;" data-bind="visible: restaurant.thumb !== '' && restaurant.thumb !== null, attr: { src: restaurant.thumb !== null ? restaurant.thumb : 'res/images/placeholder.png' }">
                     </div>
                     <h2 class="restaurant-name" data-bind="text: restaurant.name"></h2>
-                    <div data-bind="visible: restaurant.name !== 'No restaurants found for this location' && $parent.isErr !== true">
+                    <div data-bind="visible: $parent.showEls">
                         <span>Cuisine: </span><span data-bind="text: restaurant.cuisines"></span>
                         <h4 class="restaurant-address" data-bind="text: restaurant.location.address"></h4>
                         <button class="tab-item-button smooth" data-bind="click: $parent.addPlace">Save place</button>

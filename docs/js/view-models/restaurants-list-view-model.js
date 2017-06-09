@@ -21,6 +21,8 @@ define(
          */
         var RestaurantsListViewModel = function(place, data, isError, main) {
 
+            var _this = this;
+
             // creating a template observable to render the views html.
             this.template = ko.observable();
 
@@ -51,7 +53,9 @@ define(
             // creating an observable to reference if the request result returned an error.
             this.isErr = ko.observable(isError);
 
-
+            this.showEls = ko.computed(function(){
+                return _this.isErr() || _this.name() === 'No restaurants found for this location' ? false : true;
+            });
 
 
 

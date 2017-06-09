@@ -34,14 +34,9 @@ define(
             this.mapViewModel = mapViewModel;
 
             this.getInfo = function() {
-                alert('Getting Info');
-            };
 
-            this.hideMap = function() {
-                ko.cleanNode($('#info-window-container')[0]);
-                // Applying KO's bindings to the map container.  Only using to hide and show the map.
-                ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);
-                _this.mapViewModel.showMap(false);
+                // navigate to the tabs events view
+                Backbone.history.navigate('#events/' + _this.place().id + '/' + _this.place().name + '/' + _this.place().address + '/' + _this.place().lat + '/' + _this.place().lng, { trigger: true });
             };
 
             // returning this MapViewModel

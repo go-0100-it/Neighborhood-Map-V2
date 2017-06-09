@@ -59,9 +59,6 @@ define([
                     // Creating the map view model.
                     _this.mapViewModel = new MapViewModel();
 
-                    // Creating the map view model.
-                    _this.infoWindowViewModel = new InfoWindowViewModel(_this.mapViewModel);
-
                     // Adding the map html template to render the map container.
                     //_this.mapViewModel.template(tpl.get('map'));
 
@@ -69,6 +66,9 @@ define([
                     _this.infowindow = new google.maps.InfoWindow({
                         content: _this.createContent(true)
                     });
+
+                    // Creating the map view model.
+                    _this.infoWindowViewModel = new InfoWindowViewModel(_this.mapViewModel);
 
                     // Applying KO's bindings to the map container.  Only using to hide and show the map.
                     ko.applyBindings(_this.mapViewModel, $('#map-container-view')[0]);
@@ -78,7 +78,7 @@ define([
                         ko.cleanNode($('#map-container-view')[0]);
 
                         ko.applyBindings(_this.infoWindowViewModel, $('#info-window-container')[0]);
-
+                        
                         // _this.infowindow.setContent(content);
                         _this.infoWindowViewModel.place(_this.openMarker.place);
 
@@ -119,8 +119,8 @@ define([
                 _this.centerOnLocation(loc);
             };
 
-            this.createContent = function(none) {
-                return none ? '<div id="info-window-container" class="info-window-container">' +
+            this.createContent = function(html) {
+                return html ? '<div id="info-window-container" class="info-window-container">' +
                     '<div class="info-window">' +
                     '<h1 data-bind="text:  place().name"></h1>' +
                     '<div id="info-window-img-container">' +

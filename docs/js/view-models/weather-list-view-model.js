@@ -60,6 +60,12 @@ define(
             // creating an observable to reference if the request result returned an error.
             this.isErr = ko.observable(isError);
 
+            this.showEls = ko.computed(function(){
+                return _this.isErr() || _this.weatherDesc() === 'No forcast found for this location' ? false : true;
+            });
+
+            
+
 
 
 

@@ -464,6 +464,14 @@ define([
                 // if a map object exists
                 if (_this.map.mapViewModel) {
 
+                    if(_this.map.openMarker){
+                        _this.map.closeInfoWindow();
+                    }
+
+                    if (!!!ko.dataFor($('#map-container-view')[0])) {
+                        ko.applyBindings(_this.map.mapViewModel, $('#map-container-view')[0]);
+                    }
+
                     // then call the showMap function passing the required state.
                     _this.map.mapViewModel.showMap(state);
 
